@@ -1,0 +1,31 @@
+:root {
+  /* 主色调 - 泥土色系 */
+  --color-primary: #8B4513;  /* 泥土棕色 */
+  --color-primary-light: #A0522D;  /* 浅泥土色 */
+  --color-primary-dark: #654321;  /* 深泥土色 */
+  
+  /* 辅助色 */
+  --color-secondary: #DEB887;  /* 实木色 */
+  --color-accent: #CD853F;  /* 秋麦色 */
+  
+  /* 背景色 */
+  --color-bg-primary: #FFFAF0;  /* 花白色背景 */
+  --color-bg-secondary: #FDF5E6;  /* 老花白色背景 */
+  
+  /* 文字颜色 */
+  --color-text-primary: #5C4033;  /* 深棕色文字 */
+  --color-text-secondary: #8B7355;  /* 中棕色文字 */
+  --color-text-light: #D2B48C;  /* 浅棕色文字 */
+  
+  /* 边框颜色 */
+  --color-border: #D2B48C;  /* 浅棕色边框 */
+  --color-border-light: #DEB887;  /* 更浅的边框色 */
+  
+  /* 阴影颜色 */
+  --color-shadow: rgba(139, 69, 19, 0.1);  /* 泥土色阴影 */
+  --color-shadow-dark: rgba(139, 69, 19, 0.2);  /* 深泥土色阴影 */
+  
+  /* 字体设置 */
+  --font-family-primary: 'STKaiti', 'KaiTi', serif;  /* 中文标题字体 */
+  --font-family-secondary: 'STSong', 'SimSun', serif;  /* 中文正文字体 */
+} 

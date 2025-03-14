@@ -1,0 +1,48 @@
+/* Element Plus 主题定制 */
+:root {
+  --el-color-primary: #8B4513;
+  --el-color-primary-light-3: #A0522D;
+  --el-color-primary-light-5: #CD853F;
+  --el-color-primary-light-7: #DEB887;
+  --el-color-primary-light-9: #FDF5E6;
+  --el-color-primary-dark-2: #654321;
+  
+  /* 文字颜色 */
+  --el-text-color-primary: #5C4033;
+  --el-text-color-regular: #8B7355;
+  --el-text-color-secondary: #D2B48C;
+  
+  /* 边框颜色 */
+  --el-border-color: #D2B48C;
+  --el-border-color-light: #DEB887;
+  
+  /* 背景颜色 */
+  --el-bg-color: #FFFAF0;
+  --el-bg-color-overlay: #FDF5E6;
+  
+  /* 菜单组件 */
+  --el-menu-bg-color: transparent;
+  --el-menu-hover-bg-color: rgba(139, 69, 19, 0.08);
+  --el-menu-active-color: var(--el-color-primary);
+  --el-menu-text-color: var(--el-text-color-primary);
+  --el-menu-hover-text-color: var(--el-color-primary);
+  --el-menu-border-color: var(--el-border-color);
+  
+  /* 卡片组件 */
+  --el-card-bg-color: var(--el-bg-color-overlay);
+  --el-card-border-color: var(--el-border-color);
+  
+  /* 按钮组件 */
+  --el-button-hover-bg-color: var(--el-color-primary-light-9);
+  --el-button-hover-text-color: var(--el-color-primary);
+  --el-button-hover-border-color: var(--el-color-primary);
+  
+  /* 过渡动画 */
+  --el-transition-duration: 0.3s;
+  --el-transition-function: ease;
+  
+  /* 阴影 */
+  --el-box-shadow: 0 2px 8px var(--color-shadow);
+  --el-box-shadow-light: 0 1px 4px var(--color-shadow);
+  --el-box-shadow-dark: 0 4px 16px var(--color-shadow-dark);
+} 

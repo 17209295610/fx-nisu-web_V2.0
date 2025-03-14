@@ -1,0 +1,23 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "build": {
+    "env": {
+      "VITE_APP_TITLE": "凤翔泥塑",
+      "VITE_API_BASE_URL": "https://api.yourdomain.com",
+      "VITE_ASSETS_URL": "https://static.yourdomain.com"
+    }
+  }
+} 

@@ -1,0 +1,162 @@
+[33mcommit 319bf82dafdcafa6132cd4bebb98e0f30c705f52[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Sat Feb 8 15:20:56 2025 +0800
+
+    fix: 完善环境变量处理逻辑
+
+[33mcommit ebc2c018445e1fc3a19e1f9db35d68e6fb1dd186[m
+Author: 逸墨 <155052044+17209295610@users.noreply.github.com>
+Date:   Sat Feb 8 15:05:50 2025 +0800
+
+    Create 3static.yml
+
+[33mcommit c716232703caaa9705062dc3b2bee55efc2a23f9[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Sat Feb 8 14:52:51 2025 +0800
+
+    chore: 完成依赖升级和构建优化
+
+[33mcommit f0d0055f9b33493722e2264ff44bb1115654fc0c[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 21:48:08 2025 +0800
+
+    fix: 修复部署配置和资源路径2
+
+[33mcommit ac7d10ac19eccd48b4e853a225f4799f9aac8c2a[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 20:18:26 2025 +0800
+
+    fix: 修复资源路径和类型定义
+
+[33mcommit 6bd4cdf3ed121d784b83b79e945f49c11ec4a6cf[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 19:39:37 2025 +0800
+
+    END
+
+[33mcommit 1a84f5baee92a6de0910df2f0411362073c854b1[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 19:35:06 2025 +0800
+
+    fix: 修复路由和部署配置
+
+[33mcommit 3c728db8ccf5d194c17cfb64d673d7a0b196f39e[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 19:30:13 2025 +0800
+
+    fix: 修复 GitHub Pages 部署配置
+
+[33mcommit a8aafe857667d7680f64a910234cb954c00733ce[m
+Author: 逸墨 <155052044+17209295610@users.noreply.github.com>
+Date:   Thu Feb 6 19:21:18 2025 +0800
+
+    Create static2.yml
+
+[33mcommit ab1a19ed28cdf5042ffc897c9f9d7789df2cc3ef[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 19:21:02 2025 +0800
+
+    fix: 修复部署配置
+
+[33mcommit 3dfef457dc6b4754a0551ba3813b3b5df7e6f255[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 19:16:17 2025 +0800
+
+    feat: 优化构建配置
+
+[33mcommit c7d1fb40a72f22d275e9a1271a3d017329f76274[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 18:29:38 2025 +0800
+
+    fix: 修复部署配置
+
+[33mcommit d8d62d43ea5d5516d83f97cb817a2989227cde70[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 18:18:39 2025 +0800
+
+    fix: 修复构建配置
+
+[33mcommit 73dd114b2044fc852c3c8e6341d64a90a7afcf7b[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 18:08:55 2025 +0800
+
+    feat: 初始化凤翔泥塑网站项目
+
+[33mcommit 950a1c0172e6d6eb021b4c1ee68438282ecccd96[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Thu Feb 6 17:20:38 2025 +0800
+
+    完成开发
+
+[33mcommit fbde1c38b36302135a5def60b2d1a30fe2923709[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:49:37 2025 +0800
+
+    Fix: update all configurations for GitHub Pages
+
+[33mcommit 5b4dddd66304dbe2ce363b421c4d12b3b2b2a5ba[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:46:39 2025 +0800
+
+    Fix: update base path configuration
+
+[33mcommit 6aae4c0061369364dc2af3b4e3064247e038a17a[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:43:35 2025 +0800
+
+    Fix: update GitHub Actions workflow
+
+[33mcommit cc76cb6110b52cfc587bf54e3d76744e799f9b75[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:37:59 2025 +0800
+
+    Fix: update build and deployment configuration
+
+[33mcommit a168f8c11bf98dcb355c3778158481c3b7104ce0[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:25:53 2025 +0800
+
+    Fix: update build configuration
+
+[33mcommit 2424f269fd98acd8525bc2b7ec98b636e0ae941a[m
+Merge: d8757d5 b76bde0
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:20:07 2025 +0800
+
+    Fix: update router base path for GitHub Pages
+
+[33mcommit d8757d55ee214cbc255215422d429458ba8ab086[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 23:18:55 2025 +0800
+
+    Fix routing base path
+
+[33mcommit b76bde02df3892113b234aeaae64a5313823507f[m
+Author: 逸墨 <155052044+17209295610@users.noreply.github.com>
+Date:   Tue Feb 4 23:11:18 2025 +0800
+
+    Create 3.yml
+
+[33mcommit d2f1ec01472bdfcc7d55eb349636f59c01e5af09[m
+Author: 逸墨 <155052044+17209295610@users.noreply.github.com>
+Date:   Tue Feb 4 23:08:00 2025 +0800
+
+    Create s.yml
+
+[33mcommit cd0c1356579dcce2c7d89031b4ac7c9f6b8718bc[m
+Author: 逸墨 <155052044+17209295610@users.noreply.github.com>
+Date:   Tue Feb 4 23:00:52 2025 +0800
+
+    Create static.yml
+
+[33mcommit f32105f52f76d524e74dfd456b74c613c2900140[m
+Author: 逸墨 <2798156978@qq.com>
+Date:   Tue Feb 4 22:53:45 2025 +0800
+
+    Setup GitHub Pages deployment
+
+[33mcommit d206c463cadca10f379cc73a2f96127930892426[m
+Author: 逸墨 <14088282+yi_xiao_mo@user.noreply.gitee.com>
+Date:   Mon Jan 27 23:10:23 2025 +0800
+
+    feat: 完成所有页面开发 V1.0
