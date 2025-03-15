@@ -171,21 +171,53 @@
                 </p>
               </div>
 
-              <!-- 视频展示部分的容器 -->
+              <!-- 视频展示部分的容器 - 改为网格布局 -->
               <div
-                class="relative rounded-xl overflow-hidden shadow-lg mx-auto"
-                style="max-width: min(90%, 800px)"
+                class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
               >
-                <div class="video-wrapper">
-                  <video
-                    class="w-full object-contain rounded-xl"
-                    controls
-                    :poster="slide1"
-                    preload="metadata"
-                  >
-                    <source :src="dongmanVideo" type="video/mp4" />
-                    您的浏览器不支持视频播放。
-                  </video>
+                <!-- 第一个视频 -->
+                <div class="relative rounded-xl overflow-hidden shadow-lg">
+                  <div class="video-wrapper">
+                    <video
+                      class="w-full object-contain rounded-xl"
+                      controls
+                      preload="metadata"
+                    >
+                      <source :src="dongmanVideo" type="video/mp4" />
+                      您的浏览器不支持视频播放。
+                    </video>
+                  </div>
+                  <div class="mt-3 text-center">
+                    <h4 class="font-semibold text-[var(--color-text-primary)]">
+                      泥丫丫2D动漫展示
+                    </h4>
+                    <p class="text-xs text-[var(--color-text-secondary)]">
+                      传统二维动画风格
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 第二个视频 -->
+                <div class="relative rounded-xl overflow-hidden shadow-lg">
+                  <div class="video-wrapper">
+                    <video
+                      class="w-full object-contain rounded-xl"
+                      controls
+                      :poster="img3"
+                      preload="metadata"
+                    >
+                      <source :src="dongmanVideo2" type="video/mp4" />
+                      您的浏览器不支持视频播放。
+                    </video>
+                  </div>
+                  <div class="mt-3 text-center">
+                    <h4 class="font-semibold text-[var(--color-text-primary)]">
+                      泥囡囡3D动漫展示
+                    </h4>
+                    <p class="text-xs text-[var(--color-text-secondary)]">
+                      现代3D动漫展示
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -263,10 +295,12 @@ import { ref, onMounted, onUnmounted } from "@vue/runtime-dom";
 // 直接导入图片和视频
 import img1 from "../assets/images/Anime_image/祥泥仔1.jpg";
 import img2 from "../assets/images/Anime_image/祥泥仔2.jpg";
+import img3 from "../assets/images/Anime_image/祥泥虎.jpg";
 import tradition from "../assets/images/Anime_image/features/传统制作工艺.jpg";
 import innovation from "../assets/images/Anime_image/features/创新工艺.jpg";
 import experience from "../assets/images/Anime_image/features/文化体验基地.jpg";
 import dongmanVideo from "../assets/images/Anime_image/dongman.mp4";
+import dongmanVideo2 from "../assets/images/Anime_image/dongman2.mp4";
 import slide1 from "../assets/images/slides/slide1.jpg";
 
 // 计算轮播图高度
@@ -327,17 +361,16 @@ const carouselSlides = ref([
 
 const characters = ref([
   {
-    name: "祥泥宝",
+    name: "泥丫丫",
     description: "凤翔泥塑的文化传承者，以可爱的造型和传统服饰展现非遗魅力。",
     image: img1,
     tags: ["文化传承", "传统服饰", "艺术形象"],
   },
   {
-    name: "祥泥宝",
-    description:
-      "活泼灵动的创新形象，融合传统与现代元素，展现凤翔泥塑的创新活力。",
-    image: img2,
-    tags: ["创新设计", "活力形象", "文化创新"],
+    name: "泥囡囡",
+    description: "威武可爱的祥瑞形象，融合传统虎文化元素，象征着力量与勇气。",
+    image: img3,
+    tags: ["传统文化", "祥瑞形象", "力量象征"],
   },
 ]);
 
@@ -744,5 +777,15 @@ video::-webkit-media-controls-play-button {
   .video-wrapper {
     padding-bottom: 75%; /* 4:3 比例，适合移动端 */
   }
+}
+
+/* 添加视频卡片悬停效果 */
+.video-wrapper {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 </style>
