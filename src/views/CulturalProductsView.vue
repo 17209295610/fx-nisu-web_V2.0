@@ -103,7 +103,10 @@
           class="inline-block bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 px-8 py-4 rounded-2xl shadow-md"
         >
           <p class="text-gray-700 text-lg">
-            {{ categories.find((c) => c.id === activeCategory)?.description }}
+            {{
+              categories.find((c: Category) => c.id === activeCategory)
+                ?.description
+            }}
           </p>
         </div>
       </div>
@@ -128,14 +131,15 @@
                 fit="cover"
                 :preview-src-list="[product.image]"
                 preview-teleported
+                loading="lazy"
               >
                 <template #placeholder>
                   <div
-                    class="flex items-center justify-center h-full bg-gray-100"
+                    class="flex items-center justify-center h-full bg-gray-100 animate-pulse"
                   >
-                    <el-icon class="text-3xl text-gray-300 animate-spin"
-                      ><Picture
-                    /></el-icon>
+                    <el-icon class="text-3xl text-gray-300 animate-spin">
+                      <i-ep-picture />
+                    </el-icon>
                   </div>
                 </template>
               </el-image>
@@ -186,7 +190,7 @@
                   text
                   class="w-full flex justify-center items-center gap-2"
                 >
-                  <el-icon><ZoomIn /></el-icon>
+                  <el-icon><i-ep-zoom-in /></el-icon>
                   查看详情
                 </el-button>
               </div>
@@ -201,7 +205,7 @@
       >
         <el-icon
           class="text-4xl text-gray-400 mb-4 group-hover:text-primary transition-colors duration-300"
-          ><Plus
+          ><i-ep-plus
         /></el-icon>
         <h3
           class="text-xl font-bold text-gray-400 mb-2 group-hover:text-gray-600 transition-colors duration-300"
@@ -223,8 +227,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { Picture, Plus, ZoomIn } from "@element-plus/icons-vue";
+import { ref, computed } from "@vue/runtime-dom";
+
+// 定义类型
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+}
 
 // 导入图片
 import cup1 from "../assets/images/文创产品/杯具1.jpg";
@@ -245,7 +255,7 @@ import phone1 from "../assets/images/文创产品/手机壳1.jpg";
 import phone2 from "../assets/images/文创产品/手机壳2.jpg";
 
 // 产品分类
-const categories = [
+const categories = ref<Category[]>([
   {
     id: "cups",
     name: "文创杯具",
@@ -269,7 +279,7 @@ const categories = [
     description:
       "以传统工艺装点文房四宝，让每次书写都充满文化底蕴，激发无限创意灵感",
   },
-];
+]);
 
 const activeCategory = ref("cups");
 
@@ -561,17 +571,6 @@ const bannerBg = new URL(
   from {
     opacity: 0;
     transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
   }
   to {
     opacity: 1;

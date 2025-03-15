@@ -2,9 +2,6 @@
   <div
     class="min-h-screen relative bg-gradient-to-b from-gray-800 to-gray-900 text-white overflow-hidden"
   >
-    <!-- 页面导航 -->
-    <Breadcrumb />
-
     <!-- 顶部横幅 -->
     <div class="relative h-[500px] bg-primary overflow-hidden">
       <!-- 背景图片 -->
@@ -32,300 +29,321 @@
       </div>
     </div>
 
-    <!-- 游戏内容 -->
-    <div class="relative">
-      <!-- 游戏主体区域优化 -->
-      <div class="container mx-auto px-4 py-8">
-        <div class="max-w-6xl mx-auto">
-          <div class="flex flex-col lg:flex-row gap-8">
-            <!-- 左侧信息面板优化 -->
-            <div class="lg:w-1/3 space-y-6">
-              <!-- 游戏状态和音效控制 -->
-              <div class="flex gap-2 mb-4">
-                <div
-                  class="flex-1 flex items-center gap-2 bg-gray-800/40 backdrop-blur-xl rounded-xl px-4 py-2 border border-gray-700/50"
-                >
+    <!-- 游戏区域 -->
+    <div class="game-container">
+      <!-- 添加加载动画 -->
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+          <el-icon class="animate-spin text-4xl text-primary"
+            ><Loading
+          /></el-icon>
+          <p class="mt-4 text-primary font-medium">游戏加载中...</p>
+        </div>
+      </div>
+
+      <!-- 游戏网格 -->
+      <div v-else class="game-grid" :class="{ paused: isPaused }">
+        <!-- 游戏主体区域优化 -->
+        <div class="container mx-auto px-4 py-8">
+          <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-8">
+              <!-- 左侧信息面板优化 -->
+              <div class="lg:w-1/3 space-y-6">
+                <!-- 游戏状态和音效控制 -->
+                <div class="flex gap-2 mb-4">
                   <div
-                    class="w-2 h-2 rounded-full animate-pulse"
-                    :class="isPlaying ? 'bg-green-500' : 'bg-gray-500'"
-                  ></div>
-                  <span class="text-sm">{{
-                    isPlaying ? "游戏进行中" : "等待开始"
-                  }}</span>
-                </div>
-
-                <button
-                  @click="toggleSound"
-                  class="flex items-center justify-center w-12 h-10 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 hover:bg-gray-700/40 transition-colors"
-                >
-                  <el-icon :class="isMuted ? 'text-gray-400' : 'text-white'">
-                    <i-ep-mute v-if="isMuted" />
-                    <i-ep-bell v-else />
-                  </el-icon>
-                </button>
-              </div>
-
-              <!-- 关卡信息卡片 -->
-              <div
-                class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
-              >
-                <div class="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 class="text-2xl font-bold">第 {{ currentLevel }} 关</h2>
-                    <p class="text-gray-400">{{ levelStatus }}</p>
-                  </div>
-                  <el-tag
-                    :type="isPlaying ? 'success' : 'info'"
-                    effect="dark"
-                    round
-                    size="large"
+                    class="flex-1 flex items-center gap-2 bg-gray-800/40 backdrop-blur-xl rounded-xl px-4 py-2 border border-gray-700/50"
                   >
-                    {{ isPlaying ? "游戏中" : "未开始" }}
-                  </el-tag>
-                </div>
-
-                <!-- 游戏数据 -->
-                <div class="space-y-6">
-                  <!-- 分数显示优化 -->
-                  <div
-                    class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
-                  >
-                    <div class="flex justify-between items-center mb-2">
-                      <div class="flex items-center gap-2">
-                        <div
-                          class="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center"
-                        >
-                          <el-icon class="text-yellow-500"
-                            ><i-ep-medal
-                          /></el-icon>
-                        </div>
-                        <span class="text-gray-400">当前分数</span>
-                      </div>
-                      <span
-                        class="text-3xl font-bold bg-gradient-to-r from-yellow-500 to-red-500 bg-clip-text text-transparent"
-                      >
-                        {{ score }}
-                      </span>
-                    </div>
-                    <el-progress
-                      :percentage="Math.min((score / targetScore) * 100, 100)"
-                      :format="() => `目标: ${targetScore}`"
-                      :stroke-width="12"
-                      class="custom-progress"
-                    >
-                      <template #default="{ percentage }">
-                        <span class="progress-label"
-                          >{{ Math.floor(percentage) }}%</span
-                        >
-                      </template>
-                    </el-progress>
-                  </div>
-
-                  <!-- 时间显示优化 -->
-                  <div
-                    class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
-                  >
-                    <div class="flex justify-between items-center">
-                      <div class="flex items-center gap-2">
-                        <div
-                          class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center"
-                        >
-                          <el-icon class="text-blue-500"
-                            ><i-ep-timer
-                          /></el-icon>
-                        </div>
-                        <span class="text-gray-400">剩余时间</span>
-                      </div>
-                      <div
-                        class="text-3xl font-mono font-bold"
-                        :class="[
-                          timeWarning
-                            ? 'text-red-500 animate-pulse'
-                            : 'text-blue-400',
-                          'transition-colors duration-300',
-                        ]"
-                      >
-                        {{ formatTime(remainingTime) }}
-                      </div>
-                    </div>
-                    <el-progress
-                      :percentage="(remainingTime / gameConfig.baseTime) * 100"
-                      :stroke-width="8"
-                      :show-text="false"
-                      class="mt-2"
-                      :status="timeWarning ? 'exception' : ''"
-                    />
-                  </div>
-
-                  <!-- 连击显示优化 -->
-                  <div
-                    class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
-                  >
-                    <div class="flex justify-between items-center">
-                      <div class="flex items-center gap-2">
-                        <div
-                          class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center"
-                        >
-                          <el-icon class="text-purple-500"
-                            ><i-ep-star
-                          /></el-icon>
-                        </div>
-                        <span class="text-gray-400">最大连击</span>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span
-                          class="text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"
-                        >
-                          {{ maxCombo }}
-                        </span>
-                        <span class="text-sm text-gray-400">连击</span>
-                      </div>
-                    </div>
                     <div
-                      class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden"
-                    >
-                      <div
-                        class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                        :style="{ width: `${(maxCombo / 10) * 100}%` }"
-                      ></div>
-                    </div>
+                      class="w-2 h-2 rounded-full animate-pulse"
+                      :class="isPlaying ? 'bg-green-500' : 'bg-gray-500'"
+                    ></div>
+                    <span class="text-sm">{{
+                      isPlaying ? "游戏进行中" : "等待开始"
+                    }}</span>
                   </div>
 
-                  <!-- 提示次数显示 -->
-                  <div
-                    class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
+                  <button
+                    @click="toggleSound"
+                    class="flex items-center justify-center w-12 h-10 bg-gray-800/40 backdrop-blur-xl rounded-xl border border-gray-700/50 hover:bg-gray-700/40 transition-colors"
                   >
-                    <div class="flex justify-between items-center">
-                      <div class="flex items-center gap-2">
-                        <div
-                          class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center"
-                        >
-                          <el-icon class="text-green-500"
-                            ><i-ep-lightbulb
-                          /></el-icon>
+                    <el-icon :class="isMuted ? 'text-gray-400' : 'text-white'">
+                      <i-ep-mute v-if="isMuted" />
+                      <i-ep-bell v-else />
+                    </el-icon>
+                  </button>
+                </div>
+
+                <!-- 关卡信息卡片 -->
+                <div
+                  class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
+                >
+                  <div class="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 class="text-2xl font-bold">
+                        第 {{ currentLevel }} 关
+                      </h2>
+                      <p class="text-gray-400">{{ levelStatus }}</p>
+                    </div>
+                    <el-tag
+                      :type="isPlaying ? 'success' : 'info'"
+                      effect="dark"
+                      round
+                      size="large"
+                    >
+                      {{ isPlaying ? "游戏中" : "未开始" }}
+                    </el-tag>
+                  </div>
+
+                  <!-- 游戏数据 -->
+                  <div class="space-y-6">
+                    <!-- 分数显示优化 -->
+                    <div
+                      class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center gap-2">
+                          <div
+                            class="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center"
+                          >
+                            <el-icon class="text-yellow-500"
+                              ><i-ep-medal
+                            /></el-icon>
+                          </div>
+                          <span class="text-gray-400">当前分数</span>
                         </div>
-                        <span class="text-gray-400">提示次数</span>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="text-2xl font-bold text-green-400">
-                          {{ hintCount }}
+                        <span
+                          class="text-3xl font-bold bg-gradient-to-r from-yellow-500 to-red-500 bg-clip-text text-transparent"
+                        >
+                          {{ score }}
                         </span>
-                        <span class="text-sm text-gray-400">次</span>
+                      </div>
+                      <el-progress
+                        :percentage="Math.min((score / targetScore) * 100, 100)"
+                        :format="() => `目标: ${targetScore}`"
+                        :stroke-width="12"
+                        class="custom-progress"
+                      >
+                        <template #default="{ percentage }">
+                          <span class="progress-label"
+                            >{{ Math.floor(percentage) }}%</span
+                          >
+                        </template>
+                      </el-progress>
+                    </div>
+
+                    <!-- 时间显示优化 -->
+                    <div
+                      class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                          <div
+                            class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center"
+                          >
+                            <el-icon class="text-blue-500"
+                              ><i-ep-timer
+                            /></el-icon>
+                          </div>
+                          <span class="text-gray-400">剩余时间</span>
+                        </div>
+                        <div
+                          class="text-3xl font-mono font-bold"
+                          :class="[
+                            timeWarning
+                              ? 'text-red-500 animate-pulse'
+                              : 'text-blue-400',
+                            'transition-colors duration-300',
+                          ]"
+                        >
+                          {{ formatTime(remainingTime) }}
+                        </div>
+                      </div>
+                      <el-progress
+                        :percentage="
+                          (remainingTime / gameConfig.baseTime) * 100
+                        "
+                        :stroke-width="8"
+                        :show-text="false"
+                        class="mt-2"
+                        :status="timeWarning ? 'exception' : ''"
+                      />
+                    </div>
+
+                    <!-- 连击显示优化 -->
+                    <div
+                      class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                          <div
+                            class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center"
+                          >
+                            <el-icon class="text-purple-500"
+                              ><i-ep-star
+                            /></el-icon>
+                          </div>
+                          <span class="text-gray-400">最大连击</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"
+                          >
+                            {{ maxCombo }}
+                          </span>
+                          <span class="text-sm text-gray-400">连击</span>
+                        </div>
+                      </div>
+                      <div
+                        class="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
+                          :style="{ width: `${(maxCombo / 10) * 100}%` }"
+                        ></div>
                       </div>
                     </div>
-                    <button
-                      @click="getHint"
-                      class="mt-2 w-full py-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg text-green-400 transition-colors duration-300 flex items-center justify-center gap-2"
-                      :class="{
-                        'opacity-50 cursor-not-allowed':
+
+                    <!-- 提示次数显示 -->
+                    <div
+                      class="bg-gray-800/50 rounded-xl p-4 transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                          <div
+                            class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center"
+                          >
+                            <el-icon class="text-green-500"
+                              ><i-ep-lightbulb
+                            /></el-icon>
+                          </div>
+                          <span class="text-gray-400">提示次数</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="text-2xl font-bold text-green-400">
+                            {{ hintCount }}
+                          </span>
+                          <span class="text-sm text-gray-400">次</span>
+                        </div>
+                      </div>
+                      <button
+                        @click="getHint"
+                        class="mt-2 w-full py-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg text-green-400 transition-colors duration-300 flex items-center justify-center gap-2"
+                        :class="{
+                          'opacity-50 cursor-not-allowed':
+                            !isPlaying ||
+                            isPaused ||
+                            hintCount <= 0 ||
+                            showingHint,
+                        }"
+                        :disabled="
                           !isPlaying ||
                           isPaused ||
                           hintCount <= 0 ||
-                          showingHint,
-                      }"
-                      :disabled="
-                        !isPlaying || isPaused || hintCount <= 0 || showingHint
-                      "
-                    >
-                      <el-icon><i-ep-lightbulb /></el-icon>
-                      <span>使用提示</span>
-                    </button>
+                          showingHint
+                        "
+                      >
+                        <el-icon><i-ep-lightbulb /></el-icon>
+                        <span>使用提示</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 操作按钮优化 -->
+                <div class="space-y-4">
+                  <el-button
+                    type="primary"
+                    size="large"
+                    class="w-full !h-14 !text-lg !rounded-xl hover:scale-105 transform transition-all duration-300"
+                    @click="startGame"
+                  >
+                    <div class="flex items-center justify-center gap-2">
+                      <el-icon><i-ep-video-play /></el-icon>
+                      <span>{{ isPlaying ? "重新开始" : "开始游戏" }}</span>
+                    </div>
+                  </el-button>
+
+                  <el-button
+                    v-if="isPlaying"
+                    type="warning"
+                    size="large"
+                    class="w-full !h-14 !text-lg !rounded-xl hover:scale-105 transform transition-all duration-300"
+                    @click="pauseGame"
+                  >
+                    <div class="flex items-center justify-center gap-2">
+                      <el-icon>
+                        <i-ep-video-play v-if="isPaused" />
+                        <i-ep-video-pause v-else />
+                      </el-icon>
+                      <span>{{ isPaused ? "继续游戏" : "暂停游戏" }}</span>
+                    </div>
+                  </el-button>
+                </div>
+
+                <!-- 游戏说明优化 -->
+                <div
+                  class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
+                >
+                  <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <el-icon class="mr-2"><i-ep-info-filled /></el-icon>
+                    游戏说明
+                  </h3>
+                  <div class="space-y-3 text-gray-300">
+                    <p class="flex items-center">
+                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
+                      点击两个相邻的生肖图案进行交换
+                    </p>
+                    <p class="flex items-center">
+                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
+                      连接三个或以上相同生肖可以消除
+                    </p>
+                    <p class="flex items-center">
+                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
+                      达到目标分数即可通关
+                    </p>
+                    <p class="flex items-center">
+                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
+                      注意剩余时间，时间用完游戏结束
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <!-- 操作按钮优化 -->
-              <div class="space-y-4">
-                <el-button
-                  type="primary"
-                  size="large"
-                  class="w-full !h-14 !text-lg !rounded-xl hover:scale-105 transform transition-all duration-300"
-                  @click="startGame"
+              <!-- 右侧游戏区域优化 -->
+              <div class="lg:w-2/3">
+                <div
+                  class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
                 >
-                  <div class="flex items-center justify-center gap-2">
-                    <el-icon><i-ep-video-play /></el-icon>
-                    <span>{{ isPlaying ? "重新开始" : "开始游戏" }}</span>
-                  </div>
-                </el-button>
-
-                <el-button
-                  v-if="isPlaying"
-                  type="warning"
-                  size="large"
-                  class="w-full !h-14 !text-lg !rounded-xl hover:scale-105 transform transition-all duration-300"
-                  @click="pauseGame"
-                >
-                  <div class="flex items-center justify-center gap-2">
-                    <el-icon>
-                      <i-ep-video-play v-if="isPaused" />
-                      <i-ep-video-pause v-else />
-                    </el-icon>
-                    <span>{{ isPaused ? "继续游戏" : "暂停游戏" }}</span>
-                  </div>
-                </el-button>
-              </div>
-
-              <!-- 游戏说明优化 -->
-              <div
-                class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
-              >
-                <h3 class="text-xl font-bold mb-4 flex items-center">
-                  <el-icon class="mr-2"><i-ep-info-filled /></el-icon>
-                  游戏说明
-                </h3>
-                <div class="space-y-3 text-gray-300">
-                  <p class="flex items-center">
-                    <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                    点击两个相邻的生肖图案进行交换
-                  </p>
-                  <p class="flex items-center">
-                    <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                    连接三个或以上相同生肖可以消除
-                  </p>
-                  <p class="flex items-center">
-                    <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                    达到目标分数即可通关
-                  </p>
-                  <p class="flex items-center">
-                    <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                    注意剩余时间，时间用完游戏结束
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 右侧游戏区域优化 -->
-            <div class="lg:w-2/3">
-              <div
-                class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
-              >
-                <!-- 游戏网格优化 -->
-                <div class="game-grid-container">
-                  <div class="grid grid-cols-8 gap-3">
-                    <div
-                      v-for="(tile, index) in gameGrid"
-                      :key="index"
-                      class="game-tile"
-                      :class="{
-                        selected: selectedTile === index,
-                        'hint-tile': hintTiles.includes(index) && showingHint,
-                        'hover:scale-110': isPlaying && !isPaused,
-                        'opacity-75 cursor-not-allowed': !isPlaying || isPaused,
-                        'filter grayscale': !isPlaying,
-                      }"
-                      @click="selectTile(index)"
-                    >
-                      <div class="tile-inner">
-                        <img
-                          :src="getZodiacImage(tile)"
-                          :alt="tile"
-                          class="w-full h-full object-cover rounded-lg transition-all duration-300"
-                          :class="{
-                            'grayscale brightness-75': !isPlaying || isPaused,
-                            'hover:brightness-110': isPlaying && !isPaused,
-                          }"
-                        />
-                        <div class="tile-glow"></div>
+                  <!-- 游戏网格优化 -->
+                  <div class="game-grid-container">
+                    <div class="grid grid-cols-8 gap-3">
+                      <div
+                        v-for="(tile, index) in gameGrid"
+                        :key="index"
+                        class="game-tile"
+                        :class="{
+                          selected: selectedTile === index,
+                          'hint-tile': hintTiles.includes(index) && showingHint,
+                          'hover:scale-110': isPlaying && !isPaused,
+                          'opacity-75 cursor-not-allowed':
+                            !isPlaying || isPaused,
+                          'filter grayscale': !isPlaying,
+                        }"
+                        @click="selectTile(index)"
+                      >
+                        <div class="tile-inner">
+                          <img
+                            :src="getZodiacImage(tile)"
+                            :alt="tile"
+                            class="w-full h-full object-cover rounded-lg transition-all duration-300"
+                            :class="{
+                              'grayscale brightness-75': !isPlaying || isPaused,
+                              'hover:brightness-110': isPlaying && !isPaused,
+                            }"
+                          />
+                          <div class="tile-glow"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -365,11 +383,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "@vue/runtime-dom";
 import { ElMessage } from "element-plus";
 // 使用正确的图标导入方式
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
-import Breadcrumb from "@/components/common/Breadcrumb.vue";
+import { Loading } from "@element-plus/icons-vue";
 
 // 添加游戏状态类型
 type GameStatus = "未开始" | "进行中" | "已暂停" | "已结束";
@@ -488,8 +506,14 @@ const toggleSound = () => {
 const audioBg = new Audio(bgMusic);
 audioBg.loop = true; // 设置循环播放
 
+// 添加加载状态
+const isLoading = ref(true);
+
 // 修改 initializeGame 函数
 const initializeGame = () => {
+  // 设置加载状态
+  isLoading.value = true;
+
   // 停止背景音乐
   audioBg.pause();
   audioBg.currentTime = 0;
@@ -512,6 +536,11 @@ const initializeGame = () => {
 
   // 初始化一个默认的游戏网格
   initializeGrid();
+
+  // 模拟加载延迟
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1500);
 };
 
 // 添加一个新函数来检查初始棋盘是否有匹配
@@ -739,6 +768,8 @@ const findPotentialMatches = () => {
 
       // 临时交换两个相邻的方块
       const temp = grid[index];
+      grid[index] = grid[nextIndex];
+      grid[nextIndex] = temp;
 
       // 模拟交换后检查是否形成匹配
       // 水平检查
@@ -775,6 +806,9 @@ const findPotentialMatches = () => {
           ]);
         }
       }
+
+      // 恢复原始状态
+      grid[index] = temp;
     }
   }
 
@@ -788,6 +822,8 @@ const findPotentialMatches = () => {
 
       // 临时交换两个相邻的方块
       const temp = grid[index];
+      grid[index] = grid[nextIndex];
+      grid[nextIndex] = temp;
 
       // 模拟交换后检查是否形成匹配
       // 垂直检查
@@ -824,6 +860,9 @@ const findPotentialMatches = () => {
           ]);
         }
       }
+
+      // 恢复原始状态
+      grid[index] = temp;
     }
   }
 

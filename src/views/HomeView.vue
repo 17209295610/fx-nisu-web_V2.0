@@ -259,7 +259,7 @@ import {
   Present,
   ArrowRight,
 } from "@element-plus/icons-vue";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "@vue/runtime-dom";
 // 直接导入图片和视频
 import img1 from "../assets/images/Anime_image/祥泥仔1.jpg";
 import img2 from "../assets/images/Anime_image/祥泥仔2.jpg";
@@ -369,8 +369,8 @@ const culturalFeatures = ref([
   },
 ]);
 
-const imageLoaded = ref([]);
-const handleImageLoad = (index) => {
+const imageLoaded = ref<boolean[]>([]);
+const handleImageLoad = (index: number) => {
   imageLoaded.value[index] = true;
 };
 </script>

@@ -9,6 +9,32 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes floatAnimation {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes rotateIn {
+  from { transform: rotate(-10deg); opacity: 0; }
+  to { transform: rotate(0); opacity: 1; }
+}
+
 // 通用动画类
 .fade-enter-active {
   animation: fadeIn 0.3s ease-out;
@@ -16,4 +42,87 @@
 
 .slide-up-enter-active {
   animation: slideUp 0.3s ease-out;
+}
+
+.slide-right-enter-active {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.slide-left-enter-active {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.zoom-in-enter-active {
+  animation: zoomIn 0.4s ease-out;
+}
+
+.float {
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+.rotate-in-enter-active {
+  animation: rotateIn 0.5s ease-out;
+}
+
+// 滚动显示动画
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+  opacity: 0;
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-slide-right {
+  opacity: 0;
+  animation: slideInRight 0.8s ease-out forwards;
+}
+
+.animate-slide-left {
+  opacity: 0;
+  animation: slideInLeft 0.8s ease-out forwards;
+}
+
+.animate-zoom-in {
+  opacity: 0;
+  animation: zoomIn 0.8s ease-out forwards;
+}
+
+// 动画延迟类
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+// 动画持续时间
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+.duration-500 {
+  animation-duration: 500ms;
+}
+
+.duration-700 {
+  animation-duration: 700ms;
+}
+
+.duration-1000 {
+  animation-duration: 1000ms;
 } 

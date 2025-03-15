@@ -1,7 +1,10 @@
 <template>
   <!-- 页面底部 -->
-  <footer class="bg-gray-900 text-gray-400 py-2">
-    <div class="container mx-auto px-4">
+  <footer class="bg-gray-900 text-gray-400 py-2 relative overflow-hidden">
+    <!-- 添加动态背景效果 -->
+    <div class="footer-particles absolute inset-0 opacity-10"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Logo和简介 -->
         <div class="space-y-2">
@@ -108,6 +111,8 @@
               咸阳职业技术学院信息工程学院
               <br />
               2025年大学生挑战杯&互联网+创新创业大赛参赛作品
+              <br />
+              暨陕西省非物质文化遗产凤翔泥塑数字化展示平台
             </p>
           </div>
         </div>
@@ -122,6 +127,22 @@
         </p>
       </div>
     </div>
+
+    <!-- 添加波浪装饰 -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+      <svg
+        class="relative block w-full h-6"
+        data-name="Layer 1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1200 120"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+          class="fill-primary/10"
+        ></path>
+      </svg>
+    </div>
   </footer>
 </template>
 
@@ -134,3 +155,46 @@ import {
   Share,
 } from "@element-plus/icons-vue";
 </script>
+
+<style scoped>
+/* 添加页脚粒子动画 */
+.footer-particles {
+  background-image: radial-gradient(
+    circle,
+    var(--el-color-primary) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+  animation: particleAnimation 15s infinite linear;
+}
+
+@keyframes particleAnimation {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 400px 400px;
+  }
+}
+
+/* 链接悬停效果 */
+a {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--el-color-primary);
+  transition: width 0.3s ease;
+}
+
+a:hover::after {
+  width: 100%;
+}
+</style>

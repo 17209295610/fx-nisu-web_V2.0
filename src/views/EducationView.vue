@@ -1,8 +1,5 @@
 <template>
   <div class="min-h-screen bg-pattern">
-    <!-- 页面导航 -->
-    <Breadcrumb />
-
     <!-- 顶部横条 -->
     <div class="relative h-[450px] bg-primary overflow-hidden">
       <!-- 背景图片 -->
@@ -68,7 +65,7 @@
 
       <!-- 视频展示区域 -->
       <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 animate-fadeIn animation-delay-400"
+        class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 animate-fadeIn animation-delay-400 max-w-6xl mx-auto"
       >
         <!-- 凤翔泥塑之起源 -->
         <div
@@ -76,8 +73,9 @@
         >
           <!-- 视频容器 -->
           <div class="relative aspect-w-16 aspect-h-9 bg-gray-900">
-            <!-- 播放按钮 - 始终可见 -->
+            <!-- 播放按钮 - 仅在视频未播放时显示 -->
             <div
+              v-if="!isPlaying.originVideo"
               class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
             >
               <div
@@ -86,11 +84,29 @@
                 <el-icon class="text-3xl text-white"><VideoPlay /></el-icon>
               </div>
             </div>
+
+            <!-- 视频加载状态 -->
+            <div
+              v-if="!videoLoaded.originVideo"
+              class="absolute inset-0 flex items-center justify-center bg-gray-800"
+            >
+              <div class="text-center">
+                <el-icon class="text-4xl text-primary animate-spin mb-2"
+                  ><Loading
+                /></el-icon>
+                <p class="text-white/80 text-sm">视频加载中...</p>
+              </div>
+            </div>
+
             <video
               controls
               class="w-full h-full object-cover group-hover:opacity-95 transition-opacity duration-300"
               :src="originVideo"
               :poster="originPoster"
+              @loadeddata="videoLoaded.originVideo = true"
+              @play="isPlaying.originVideo = true"
+              @pause="isPlaying.originVideo = false"
+              @ended="isPlaying.originVideo = false"
             >
               您的浏览器不支持 video 标签。
             </video>
@@ -102,7 +118,7 @@
               <h3 class="text-2xl font-bold">凤翔泥塑之起源</h3>
             </div>
             <p class="text-gray-600 leading-relaxed">
-              探索凤翔泥塑的历史起源与发展脉络，了解这一非物质文化遗产如何从古代流传至今，见证其在历史长河中的演变与传承。
+              探索凤翔泥塑的历史起源，了解这一非物质文化遗产的发展历程，感受传统工艺的魅力与价值，领略中华文化的深厚底蕴。
             </p>
             <div class="flex flex-wrap gap-2 pt-3">
               <el-tag
@@ -110,21 +126,21 @@
                 effect="plain"
                 class="text-xs transform hover:scale-105 transition-all duration-300"
               >
-                历史渊源
+                历史文化
               </el-tag>
               <el-tag
                 size="small"
                 effect="plain"
                 class="text-xs transform hover:scale-105 transition-all duration-300"
               >
-                文化传承
+                非遗传承
               </el-tag>
               <el-tag
                 size="small"
                 effect="plain"
                 class="text-xs transform hover:scale-105 transition-all duration-300"
               >
-                艺术演变
+                文化价值
               </el-tag>
             </div>
           </div>
@@ -136,8 +152,9 @@
         >
           <!-- 视频容器 -->
           <div class="relative aspect-w-16 aspect-h-9 bg-gray-900">
-            <!-- 播放按钮 - 始终可见 -->
+            <!-- 播放按钮 - 仅在视频未播放时显示 -->
             <div
+              v-if="!isPlaying.villageVideo"
               class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
             >
               <div
@@ -146,11 +163,29 @@
                 <el-icon class="text-3xl text-white"><VideoPlay /></el-icon>
               </div>
             </div>
+
+            <!-- 视频加载状态 -->
+            <div
+              v-if="!videoLoaded.villageVideo"
+              class="absolute inset-0 flex items-center justify-center bg-gray-800"
+            >
+              <div class="text-center">
+                <el-icon class="text-4xl text-primary animate-spin mb-2"
+                  ><Loading
+                /></el-icon>
+                <p class="text-white/80 text-sm">视频加载中...</p>
+              </div>
+            </div>
+
             <video
               controls
               class="w-full h-full object-cover group-hover:opacity-95 transition-opacity duration-300"
               :src="villageVideo"
               :poster="villagePoster"
+              @loadeddata="videoLoaded.villageVideo = true"
+              @play="isPlaying.villageVideo = true"
+              @pause="isPlaying.villageVideo = false"
+              @ended="isPlaying.villageVideo = false"
             >
               您的浏览器不支持 video 标签。
             </video>
@@ -211,27 +246,40 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-import { VideoPlay, Film, ArrowDown } from "@element-plus/icons-vue";
+<script setup>
+import { VideoPlay, Film, ArrowDown, Loading } from "@element-plus/icons-vue";
+import { ref } from "@vue/runtime-dom";
 
 // 添加banner背景图片
 const bannerBg = new URL("../assets/images/banners/shipin.jpg", import.meta.url)
   .href;
 
 // 导入视频资源
-import originVideo from "../assets/Video/凤翔泥塑之起源.mp4";
 import villageVideo from "../assets/Video/凤翔六营泥塑村.mp4";
+import originVideo from "../assets/Video/凤翔泥塑之起源.mp4";
 
 // 视频封面图
-const originPoster = new URL(
-  "../assets/images/video-covers/story-poster.jpg",
-  import.meta.url
-).href;
 const villagePoster = new URL(
   "../assets/images/video-covers/charm-poster.jpg",
   import.meta.url
 ).href;
+
+const originPoster = new URL(
+  "../assets/images/video-covers/charm-poster.jpg",
+  import.meta.url
+).href;
+
+// 添加视频加载状态
+const videoLoaded = ref({
+  originVideo: false,
+  villageVideo: false,
+});
+
+// 添加视频播放状态
+const isPlaying = ref({
+  originVideo: false,
+  villageVideo: false,
+});
 </script>
 
 <style scoped>

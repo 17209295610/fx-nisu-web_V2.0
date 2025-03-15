@@ -22,29 +22,33 @@
       </div>
     </div>
 
-    <!-- 页面导航面包屑 -->
-    <Breadcrumb />
-
     <!-- 泥塑起源 -->
     <div
       id="origin"
-      class="py-20 bg-gradient-to-b from-gray-50 to-white section-with-decoration"
+      class="py-20 bg-gradient-to-b from-gray-50 to-white section-with-decoration chinese-pattern"
     >
       <div class="container mx-auto px-4">
         <!-- 标题部分 -->
         <div class="text-center mb-16 section-title">
-          <el-tag type="success" class="mb-4 text-lg px-6 py-2" effect="plain"
+          <el-tag
+            type="success"
+            class="mb-4 text-lg px-6 py-2 animate-fade-in"
+            effect="plain"
             >传统技艺</el-tag
           >
-          <h2 class="text-4xl font-bold mb-6">泥塑起源</h2>
-          <div class="w-20 h-1 bg-primary mx-auto"></div>
+          <h2 class="text-4xl font-bold mb-6 animate-slide-up delay-200">
+            泥塑起源
+          </h2>
+          <div
+            class="w-20 h-1 bg-primary mx-auto animate-slide-up delay-300"
+          ></div>
         </div>
 
         <!-- 内容部分 -->
         <div class="space-y-12">
           <!-- 概述部分 -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="relative group">
+            <div class="relative group animate-on-scroll">
               <div
                 class="absolute -inset-2 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl transform rotate-2 group-hover:rotate-1 transition-transform"
               ></div>
@@ -87,7 +91,7 @@
               </div>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6 animate-on-scroll">
               <div
                 class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
               >
@@ -129,7 +133,7 @@
           </div>
 
           <!-- 特点分析 -->
-          <div class="bg-white rounded-xl shadow-md p-8">
+          <div class="bg-white rounded-xl shadow-md p-8 animate-on-scroll">
             <h3 class="text-2xl font-bold mb-6 text-center">艺术特征</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div
@@ -149,7 +153,7 @@
           </div>
 
           <!-- 制作工艺 -->
-          <div class="bg-white rounded-xl shadow-md p-8">
+          <div class="bg-white rounded-xl shadow-md p-8 animate-on-scroll">
             <h3 class="text-2xl font-bold mb-6 text-center">传统工艺</h3>
             <el-steps :active="7" finish-status="success" align-center>
               <el-step
@@ -162,7 +166,7 @@
           </div>
 
           <!-- 文化价值 -->
-          <el-card class="bg-primary/5 border-none">
+          <el-card class="bg-primary/5 border-none animate-on-scroll">
             <template #header>
               <div class="flex items-center gap-2">
                 <el-icon class="text-xl"><Star /></el-icon>
@@ -205,16 +209,23 @@
     <!-- 发展历程 -->
     <div
       id="development"
-      class="py-16 bg-gradient-to-b from-gray-50 to-white section-with-decoration"
+      class="py-16 bg-gradient-to-b from-gray-50 to-white section-with-decoration cloud-pattern"
     >
       <div class="container mx-auto px-4">
         <!-- 标题部分 -->
         <div class="text-center mb-12 section-title">
-          <el-tag type="primary" class="mb-4 text-lg px-6 py-2" effect="plain"
+          <el-tag
+            type="primary"
+            class="mb-4 text-lg px-6 py-2 animate-fade-in"
+            effect="plain"
             >历史沿革</el-tag
           >
-          <h2 class="text-3xl font-bold mb-4">发展历程</h2>
-          <div class="w-20 h-1 bg-primary mx-auto"></div>
+          <h2 class="text-3xl font-bold mb-4 animate-slide-up delay-200">
+            发展历程
+          </h2>
+          <div
+            class="w-20 h-1 bg-primary mx-auto animate-slide-up delay-300"
+          ></div>
         </div>
 
         <!-- 时间线内容 - 优化版 -->
@@ -222,7 +233,7 @@
           <div
             v-for="stage in developmentStages"
             :key="stage.period"
-            class="bg-white rounded-xl shadow-lg overflow-hidden"
+            class="bg-white rounded-xl shadow-lg overflow-hidden animate-on-scroll"
           >
             <!-- 时间段标题 -->
             <div class="bg-primary/10 p-4 border-b border-primary/20">
@@ -365,23 +376,30 @@
     <!-- 文化底蕴部分 -->
     <div
       id="culture"
-      class="py-20 bg-gradient-to-b from-white to-gray-50 section-with-decoration"
+      class="py-20 bg-gradient-to-b from-white to-gray-50 section-with-decoration chinese-pattern"
     >
       <div class="container mx-auto px-4">
         <!-- 标题部分 -->
         <div class="text-center mb-16 section-title">
-          <el-tag type="info" class="mb-4 text-lg px-6 py-2" effect="plain"
+          <el-tag
+            type="info"
+            class="mb-4 text-lg px-6 py-2 animate-fade-in"
+            effect="plain"
             >文化底蕴</el-tag
           >
-          <h2 class="text-4xl font-bold mb-6">文化渊源</h2>
-          <div class="w-20 h-1 bg-primary mx-auto"></div>
+          <h2 class="text-4xl font-bold mb-6 animate-slide-up delay-200">
+            文化渊源
+          </h2>
+          <div
+            class="w-20 h-1 bg-primary mx-auto animate-slide-up delay-300"
+          ></div>
         </div>
 
         <!-- 文化内容展示 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- 历史文化 -->
           <div
-            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500"
+            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500 animate-on-scroll"
           >
             <div class="relative h-64">
               <el-image
@@ -422,7 +440,7 @@
 
           <!-- 民俗文化 -->
           <div
-            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500"
+            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500 animate-on-scroll"
           >
             <div class="relative h-64">
               <el-image
@@ -463,7 +481,7 @@
 
           <!-- 艺术特色 -->
           <div
-            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500"
+            class="bg-white rounded-xl shadow-md overflow-hidden group hover:shadow-xl transition-all duration-500 animate-on-scroll"
           >
             <div class="relative h-64">
               <el-image
@@ -506,23 +524,30 @@
     <!-- 传承人展示 -->
     <div
       id="inheritors"
-      class="py-20 bg-gradient-to-b from-gray-50 to-white section-with-decoration"
+      class="py-20 bg-gradient-to-b from-gray-50 to-white section-with-decoration ink-bg"
     >
       <div class="container mx-auto px-4">
         <!-- 标题部分 -->
         <div class="text-center mb-16 section-title">
-          <el-tag type="warning" class="mb-4 text-lg px-6 py-2" effect="plain"
+          <el-tag
+            type="warning"
+            class="mb-4 text-lg px-6 py-2 animate-fade-in"
+            effect="plain"
             >匠心传承</el-tag
           >
-          <h2 class="text-4xl font-bold mb-6">技艺传承人</h2>
-          <div class="w-20 h-1 bg-primary mx-auto"></div>
+          <h2 class="text-4xl font-bold mb-6 animate-slide-up delay-200">
+            技艺传承人
+          </h2>
+          <div
+            class="w-20 h-1 bg-primary mx-auto animate-slide-up delay-300"
+          ></div>
         </div>
 
         <!-- 传承人卡片展示 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- 胡深 -->
           <el-card
-            class="inheritor-card hover:shadow-2xl transition-all duration-500"
+            class="inheritor-card hover:shadow-2xl transition-all duration-500 animate-on-scroll"
             :body-style="{ padding: '0' }"
           >
             <div class="relative overflow-hidden">
@@ -605,7 +630,7 @@
 
           <!-- 胡小红 -->
           <el-card
-            class="inheritor-card hover:shadow-2xl transition-all duration-500"
+            class="inheritor-card hover:shadow-2xl transition-all duration-500 animate-on-scroll"
             :body-style="{ padding: '0' }"
           >
             <div class="relative overflow-hidden">
@@ -685,7 +710,7 @@
 
           <!-- 韩建斌 -->
           <el-card
-            class="inheritor-card hover:shadow-2xl transition-all duration-500"
+            class="inheritor-card hover:shadow-2xl transition-all duration-500 animate-on-scroll"
             :body-style="{ padding: '0' }"
           >
             <div class="relative overflow-hidden">
@@ -778,9 +803,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "@vue/runtime-dom";
 import type { Component } from "@vue/runtime-dom";
+// 正确导入所需的图标
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import BackToTop from "@/components/common/BackToTop.vue";
-import Breadcrumb from "@/components/common/Breadcrumb.vue";
 
 // 使用图标组件
 const {
@@ -795,6 +820,10 @@ const {
   Trophy,
   Location,
   Timer,
+  Calendar,
+  Check,
+  Brush,
+  PictureFilled,
 } = ElementPlusIconsVue;
 
 interface DevelopmentStage {
@@ -1095,8 +1124,30 @@ const preloadImages = () => {
   });
 };
 
+// 添加页面滚动动画效果
+const animateOnScroll = () => {
+  const elements = document.querySelectorAll(".animate-on-scroll");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate-fade-in");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  elements.forEach((element) => {
+    observer.observe(element);
+  });
+};
+
 onMounted(() => {
   preloadImages();
+  animateOnScroll();
 });
 
 // 修改文化背景图片导入方式
@@ -1426,5 +1477,83 @@ const cultureBg = {
 .min-h-screen::after {
   bottom: 0;
   transform: rotate(180deg);
+}
+
+/* 添加中国传统纹样装饰 */
+.chinese-pattern {
+  position: relative;
+}
+
+.chinese-pattern::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='20' viewBox='0 0 80 20'%3E%3Cpath d='M0 10 Q 20 0, 40 10 T 80 10' stroke='%23E16C31' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  opacity: 0.6;
+}
+
+.chinese-pattern::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='20' viewBox='0 0 80 20'%3E%3Cpath d='M0 10 Q 20 20, 40 10 T 80 10' stroke='%23E16C31' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  opacity: 0.6;
+}
+
+/* 添加云纹装饰 */
+.cloud-pattern {
+  position: relative;
+  overflow: hidden;
+}
+
+.cloud-pattern::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='30' viewBox='0 0 100 30'%3E%3Cpath d='M0,15 Q10,5 20,15 T40,15 T60,15 T80,15 T100,15' stroke='%23E16C31' stroke-width='1' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+/* 改进卡片悬停效果 */
+.inheritor-card {
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.inheritor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25),
+    0 18px 36px -18px rgba(0, 0, 0, 0.3);
+}
+
+/* 添加水墨风格背景 */
+.ink-bg {
+  position: relative;
+}
+
+.ink-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 800 800'%3E%3Cdefs%3E%3CradialGradient id='a' cx='400' cy='400' r='50%25' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23E16C31' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='800' height='800'/%3E%3Cg fill-opacity='0.03'%3E%3Cpath fill='%23E16C31' d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath fill='%23E16C31' d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath fill='%23E16C31' d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath fill='%23E16C31' d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath fill='%23E16C31' d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: center;
+  background-size: cover;
+  opacity: 0.05;
+  z-index: -1;
 }
 </style>
