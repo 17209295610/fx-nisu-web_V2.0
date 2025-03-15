@@ -301,7 +301,10 @@ import innovation from "../assets/images/Anime_image/features/创新工艺.jpg";
 import experience from "../assets/images/Anime_image/features/文化体验基地.jpg";
 import dongmanVideo from "../assets/images/Anime_image/dongman.mp4";
 import dongmanVideo2 from "../assets/images/Anime_image/dongman2.mp4";
-import slide1 from "../assets/images/slides/slide1.jpg";
+import slide1 from "@/assets/images/slides/slide1.jpg";
+import slide2 from "@/assets/images/slides/slide2.jpg";
+import slide3 from "@/assets/images/slides/slide3.jpg";
+import slide4 from "@/assets/images/slides/slide4.jpg";
 
 // 计算轮播图高度
 const carouselHeight = ref("600px");
@@ -338,22 +341,22 @@ onUnmounted(() => {
 // 轮播图数据
 const carouselSlides = ref([
   {
-    image: new URL("@/assets/images/slides/slide1.jpg", import.meta.url).href,
+    image: slide1,
     title: "凤翔泥塑",
     description: "千年工艺 • 非遗传承",
   },
   {
-    image: new URL("@/assets/images/slides/slide2.jpg", import.meta.url).href,
+    image: slide2,
     title: "传统技艺",
     description: "匠心独运 • 精雕细琢",
   },
   {
-    image: new URL("@/assets/images/slides/slide3.jpg", import.meta.url).href,
+    image: slide3,
     title: "文化传承",
     description: "守正创新 • 薪火相传",
   },
   {
-    image: new URL("@/assets/images/slides/slide4.jpg", import.meta.url).href,
+    image: slide4,
     title: "艺术创新",
     description: "融古通今 • 再创辉煌",
   },
