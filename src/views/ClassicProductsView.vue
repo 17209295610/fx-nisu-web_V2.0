@@ -207,6 +207,27 @@
       :hide-on-click-modal="true"
       @close="showImageViewer = false"
     />
+
+    <!-- 在页面底部添加购买提示 -->
+    <div class="container mx-auto px-4 my-16">
+      <div
+        class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-8 text-center"
+      >
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">喜欢这些作品？</h3>
+        <p class="text-gray-600 mb-6">
+          您可以在我们的官方淘宝店铺购买正品凤翔泥塑作品
+        </p>
+        <a
+          href="https://shop342789194.m.taobao.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center px-8 py-3 bg-primary text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+        >
+          <i class="ri-store-2-line mr-2"></i>
+          <span>前往淘宝店铺</span>
+        </a>
+      </div>
+    </div>
   </div>
 </template>
 

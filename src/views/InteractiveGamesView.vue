@@ -32,13 +32,24 @@
     <!-- 游戏区域 -->
     <div class="game-container">
       <!-- 添加加载动画 -->
-      <div v-if="isLoading" class="loading-overlay">
-        <div class="loading-spinner">
-          <el-icon class="animate-spin text-4xl text-primary"
-            ><Loading
-          /></el-icon>
-          <p class="mt-4 text-primary font-medium">游戏加载中...</p>
+      <div
+        v-if="isLoading"
+        class="absolute inset-0 bg-gray-900/90 backdrop-blur-sm flex flex-col items-center justify-center z-50"
+      >
+        <div class="w-24 h-24 relative">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div
+              class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"
+            ></div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div
+              class="w-12 h-12 border-4 border-blue-400 border-b-transparent rounded-full animate-spin-slow"
+            ></div>
+          </div>
         </div>
+        <p class="mt-6 text-xl font-bold text-white">游戏加载中...</p>
+        <p class="mt-2 text-gray-400">正在准备十二生肖消消乐</p>
       </div>
 
       <!-- 游戏网格 -->
@@ -161,7 +172,7 @@
                       </div>
                       <el-progress
                         :percentage="
-                          (remainingTime / gameConfig.baseTime) * 100
+                          (remainingTime / gameConfig.baseTimeLimit) * 100
                         "
                         :stroke-width="8"
                         :show-text="false"
@@ -285,28 +296,7 @@
                 <div
                   class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
                 >
-                  <h3 class="text-xl font-bold mb-4 flex items-center">
-                    <el-icon class="mr-2"><i-ep-info-filled /></el-icon>
-                    游戏说明
-                  </h3>
-                  <div class="space-y-3 text-gray-300">
-                    <p class="flex items-center">
-                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                      点击两个相邻的生肖图案进行交换
-                    </p>
-                    <p class="flex items-center">
-                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                      连接三个或以上相同生肖可以消除
-                    </p>
-                    <p class="flex items-center">
-                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                      达到目标分数即可通关
-                    </p>
-                    <p class="flex items-center">
-                      <el-icon class="mr-2"><i-ep-circle-check /></el-icon>
-                      注意剩余时间，时间用完游戏结束
-                    </p>
-                  </div>
+                  <!-- 这里原来有游戏说明内容，现在已被移除 -->
                 </div>
               </div>
 
@@ -359,26 +349,188 @@
     <el-dialog
       v-model="showResult"
       :title="gameResult.success ? '恭喜过关！' : '游戏结束'"
-      width="400px"
-      center
-      class="game-dialog"
-      :close-on-click-modal="false"
+      width="360px"
       :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      class="game-dialog"
     >
-      <div class="text-center space-y-4">
-        <el-result
-          :icon="gameResult.success ? 'success' : 'error'"
-          :title="gameResult.success ? '恭喜过关！' : '再接再厉！'"
-          :sub-title="gameResult.message"
-        >
-          <template #extra>
-            <el-button type="primary" size="large" @click="continueGame">
-              {{ gameResult.success ? "下一关" : "重新开始" }}
-            </el-button>
-          </template>
-        </el-result>
+      <div class="text-center p-6">
+        <!-- 成功图标动画 -->
+        <div class="mb-8">
+          <div v-if="gameResult.success" class="relative w-24 h-24 mx-auto">
+            <div
+              class="absolute inset-0 bg-yellow-500/20 rounded-full animate-ping"
+            ></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <el-icon class="text-6xl text-yellow-500 animate-bounce">
+                <i-ep-trophy />
+              </el-icon>
+            </div>
+          </div>
+          <el-icon v-else class="text-6xl text-red-500 animate-bounce">
+            <i-ep-circle-close />
+          </el-icon>
+        </div>
+
+        <!-- 游戏结果信息 -->
+        <div class="space-y-4">
+          <h3 class="text-2xl font-bold text-gradient">
+            {{
+              gameResult.success ? `第 ${currentLevel} 关通关！` : "游戏结束"
+            }}
+          </h3>
+
+          <!-- 分数展示 -->
+          <div class="bg-gray-800/50 rounded-xl p-4 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">最终得分</span>
+              <span class="text-2xl font-bold text-yellow-500">{{
+                score
+              }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-400">最大连击</span>
+              <span class="text-xl font-bold text-purple-500"
+                >{{ maxCombo }}连击</span
+              >
+            </div>
+          </div>
+
+          <!-- 按钮 -->
+          <el-button
+            type="primary"
+            @click="handleResultConfirm"
+            class="w-full !h-12 !text-lg !rounded-xl mt-6 hover:scale-105 transform transition-all duration-300"
+          >
+            <div class="flex items-center justify-center gap-2">
+              <el-icon>
+                <i-ep-video-play v-if="gameResult.success" />
+                <i-ep-refresh v-else />
+              </el-icon>
+              <span>{{ gameResult.success ? "进入下一关" : "重新开始" }}</span>
+            </div>
+          </el-button>
+        </div>
       </div>
     </el-dialog>
+
+    <!-- 在游戏区域下方添加详细游戏说明 -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-6xl mx-auto">
+        <div
+          class="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 shadow-xl"
+        >
+          <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+            <el-icon class="mr-2"><i-ep-info-filled /></el-icon>
+            游戏详细说明
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- 左侧：基本规则和操作方法 -->
+            <div class="space-y-6">
+              <div>
+                <h3 class="text-xl font-bold text-primary mb-3">基本规则</h3>
+                <p class="text-gray-300">
+                  十二生肖消消乐是一款经典的三消游戏，通过交换相邻的生肖图案，形成三个或更多相同的生肖连在一起，即可消除获得分数。
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-bold text-primary mb-3">操作方法</h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                  <li>
+                    点击一个生肖图案，然后点击相邻的另一个生肖图案进行交换
+                  </li>
+                  <li>
+                    只有交换后能形成三个或更多相同生肖的情况下，交换才会成功
+                  </li>
+                  <li>消除后，上方的生肖会自动下落，空位会由新的生肖填充</li>
+                  <li>连续消除可以获得连击奖励，提高得分</li>
+                  <li>使用提示按钮可以获得可能的移动提示</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-bold text-primary mb-3">得分规则</h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                  <li>每消除一个生肖获得10分基础分数</li>
+                  <li>连击会提供额外的分数倍率：连击越多，倍率越高</li>
+                  <li>一次消除的生肖越多，获得的分数越高</li>
+                  <li>达到目标分数即可通关，进入下一关</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 右侧：关卡系统和难度变化 -->
+            <div>
+              <h3 class="text-xl font-bold text-primary mb-3">关卡系统</h3>
+              <p class="text-gray-300 mb-4">
+                游戏采用无限关卡设计，每通过一关，难度会逐渐提高：
+              </p>
+
+              <div class="space-y-4">
+                <div class="bg-gray-700/30 rounded-lg p-4">
+                  <h4 class="font-semibold text-yellow-400 mb-2">
+                    目标分数增加
+                  </h4>
+                  <p class="text-gray-300">
+                    第一关目标分数为500分，之后每关增加300分
+                  </p>
+                  <div class="mt-2 flex gap-2">
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第一关: 500分</span
+                    >
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第二关: 800分</span
+                    >
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第三关: 1100分</span
+                    >
+                  </div>
+                </div>
+
+                <div class="bg-gray-700/30 rounded-lg p-4">
+                  <h4 class="font-semibold text-blue-400 mb-2">时间限制减少</h4>
+                  <p class="text-gray-300">
+                    第一关时间为120秒，之后每关减少10秒，最低不少于60秒
+                  </p>
+                  <div class="mt-2 flex gap-2">
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第一关: 120秒</span
+                    >
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第二关: 110秒</span
+                    >
+                    <span class="px-2 py-1 bg-gray-700 rounded text-xs"
+                      >第七关+: 60秒</span
+                    >
+                  </div>
+                </div>
+
+                <div class="bg-gray-700/30 rounded-lg p-4">
+                  <h4 class="font-semibold text-green-400 mb-2">
+                    生肖种类增加
+                  </h4>
+                  <p class="text-gray-300">
+                    第一关使用6种生肖，每两关增加一种，最多使用全部12种生肖
+                  </p>
+                </div>
+
+                <div class="bg-gray-700/30 rounded-lg p-4">
+                  <h4 class="font-semibold text-purple-400 mb-2">
+                    提示次数减少
+                  </h4>
+                  <p class="text-gray-300">
+                    初始每关有3次提示机会，每三关减少一次，最少1次
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -473,16 +625,28 @@ const formatTime = (seconds: number) => {
 
 let timer: number;
 
-// 修改游戏配置
+// 游戏配置 - 提高难度
 const gameConfig = {
-  baseScore: 150, // 第一关目标分数（较容易达到）
-  baseTime: 120, // 第一关时间（充足的熟悉时间）
-  minTime: 60, // 最短时间限制（保证基本游戏体验）
-  timeDecrement: 10, // 每关减少时间（更明显的时间压力）
-  scoreIncrement: 80, // 每关增加分数（平缓的分数增长）
-  maxComboMultiplier: 4, // 提高最大连击倍数（鼓励连击）
-  hintCooldown: 10, // 提示冷却时间（秒）
-  bonusTimePerLevel: 5, // 每关额外奖励时间
+  // 基础目标分数
+  baseTargetScore: 500,
+  // 每关增加的目标分数
+  targetScoreIncrement: 300,
+  // 基础时间限制（秒）
+  baseTimeLimit: 120,
+  // 每关减少的时间（秒）
+  timeLimitDecrement: 10,
+  // 最低时间限制（秒）
+  minTimeLimit: 60,
+  // 每关奖励的额外时间（秒）
+  bonusTimePerLevel: 15,
+  // 最大连击倍数
+  maxComboMultiplier: 5,
+  // 每关增加的生肖种类数量
+  zodiacTypesPerLevel: (level) => Math.min(6 + Math.floor(level / 2), 12),
+  // 每关的提示次数
+  hintsPerLevel: (level) => Math.max(3 - Math.floor((level - 1) / 3), 1),
+  // 每关的最大连击奖励
+  comboBonus: (level) => 1 + Math.min(level * 0.1, 0.5),
 };
 
 // 在 setup 中添加音效相关逻辑
@@ -509,77 +673,572 @@ audioBg.loop = true; // 设置循环播放
 // 添加加载状态
 const isLoading = ref(true);
 
-// 修改 initializeGame 函数
+// 添加游戏说明状态
+const showInstructions = ref(false);
+
+// 修复初始化游戏函数，优化加载速度
 const initializeGame = () => {
   // 设置加载状态
   isLoading.value = true;
 
-  // 停止背景音乐
-  audioBg.pause();
-  audioBg.currentTime = 0;
-
+  // 重置游戏状态
   currentLevel.value = 1;
-  targetScore.value = gameConfig.baseScore;
   score.value = 0;
+  targetScore.value = gameConfig.baseTargetScore;
+  remainingTime.value = gameConfig.baseTimeLimit;
   combo.value = 0;
   maxCombo.value = 0;
-  remainingTime.value = gameConfig.baseTime;
-  timeWarning.value = false;
-  selectedTile.value = null;
-  showResult.value = false;
-  isPaused.value = false;
   isPlaying.value = false;
-  levelStatus.value = "未开始";
-  hintCount.value = 3;
+  isPaused.value = false;
   showingHint.value = false;
   hintTiles.value = [];
+  hintCount.value = gameConfig.hintsPerLevel(1);
+  timeWarning.value = false;
+  levelStatus.value = "未开始";
+  showResult.value = false;
+  gameResult.value = { success: false, message: "" };
+  selectedTile.value = null;
 
-  // 初始化一个默认的游戏网格
+  // 初始化游戏网格
   initializeGrid();
 
-  // 模拟加载延迟
+  // 使用更短的加载延迟
   setTimeout(() => {
     isLoading.value = false;
-  }, 1500);
+    // 移除显示游戏说明
+    // showInstructions.value = true;
+  }, 500);
 };
 
-// 添加一个新函数来检查初始棋盘是否有匹配
-const hasInitialMatches = () => {
+// 预加载图片资源
+const preloadImages = () => {
+  const imagePromises = Object.values(zodiacImages).map((src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = src;
+    });
+  });
+
+  return Promise.all(imagePromises);
+};
+
+// 预加载音频资源
+const preloadAudio = () => {
+  // 预加载所有音频文件
+  audioMatch.load();
+  audioSuccess.load();
+  audioFailure.load();
+  audioBg.load();
+};
+
+// 修改 onMounted 钩子，添加资源预加载
+onMounted(async () => {
+  isLoading.value = true;
+
+  try {
+    // 并行预加载资源
+    await Promise.all([
+      preloadImages(),
+      new Promise((resolve) => {
+        preloadAudio();
+        resolve(true);
+      }),
+    ]);
+
+    // 资源加载完成后初始化游戏
+    initializeGame();
+  } catch (error) {
+    console.error("资源加载失败:", error);
+    // 即使加载失败也初始化游戏
+    initializeGame();
+  }
+});
+
+// 修改 initializeGrid 函数，确保生成的网格没有初始匹配
+const initializeGrid = () => {
+  let newGrid = Array(64).fill("");
+
+  // 根据当前关卡确定使用的生肖种类数量
+  const zodiacTypesCount = gameConfig.zodiacTypesPerLevel(currentLevel.value);
+
+  const zodiacTypes = [
+    "rat",
+    "ox",
+    "tiger",
+    "rabbit",
+    "dragon",
+    "snake",
+    "horse",
+    "goat",
+    "monkey",
+    "rooster",
+    "dog",
+    "pig",
+  ].slice(0, zodiacTypesCount);
+
+  // 填充网格
+  for (let i = 0; i < 64; i++) {
+    newGrid[i] = zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+  }
+
+  // 确保初始网格没有匹配的组合
+  let attempts = 0;
+  const maxAttempts = 100; // 防止无限循环
+
+  while (hasInitialMatches(newGrid) && attempts < maxAttempts) {
+    // 只替换那些形成匹配的方块
+    for (let i = 0; i < 64; i++) {
+      if (isPartOfMatch(newGrid, i)) {
+        // 获取当前位置周围已有的生肖类型
+        const surroundingTypes = getSurroundingTypes(newGrid, i);
+
+        // 从可用的生肖类型中筛选出不会形成新匹配的类型
+        const availableTypes = zodiacTypes.filter(
+          (type) => !surroundingTypes.includes(type)
+        );
+
+        // 如果有可用类型，随机选择一个；否则从所有类型中随机选择
+        if (availableTypes.length > 0) {
+          newGrid[i] =
+            availableTypes[Math.floor(Math.random() * availableTypes.length)];
+        } else {
+          newGrid[i] =
+            zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+        }
+      }
+    }
+    attempts++;
+  }
+
+  // 确保有可能的匹配
+  if (!hasPossibleMatches(newGrid)) {
+    return initializeGrid(); // 递归重新初始化
+  }
+
+  gameGrid.value = newGrid;
+};
+
+// 获取周围的生肖类型（上、下、左、右）
+const getSurroundingTypes = (grid, index) => {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
+  const types = [];
+
+  // 上方
+  if (row > 0) types.push(grid[index - 8]);
+  // 下方
+  if (row < 7) types.push(grid[index + 8]);
+  // 左侧
+  if (col > 0) types.push(grid[index - 1]);
+  // 右侧
+  if (col < 7) types.push(grid[index + 1]);
+
+  return types;
+};
+
+// 修改 fillEmptySpaces 函数，确保新生成的方块不会立即形成匹配
+const fillEmptySpaces = () => {
+  const newGrid = [...gameGrid.value];
+  const zodiacTypesCount = gameConfig.zodiacTypesPerLevel(currentLevel.value);
+
+  const zodiacTypes = [
+    "rat",
+    "ox",
+    "tiger",
+    "rabbit",
+    "dragon",
+    "snake",
+    "horse",
+    "goat",
+    "monkey",
+    "rooster",
+    "dog",
+    "pig",
+  ].slice(0, zodiacTypesCount);
+
+  // 从底部向上填充空白位置
+  for (let col = 0; col < 8; col++) {
+    for (let row = 7; row >= 0; row--) {
+      const index = row * 8 + col;
+
+      if (newGrid[index] === "") {
+        // 获取周围已有的生肖类型
+        const surroundingTypes = getSurroundingTypes(newGrid, index);
+
+        // 尝试找到一个不会立即形成匹配的生肖类型
+        let selectedType = "";
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        while (attempts < maxAttempts) {
+          // 随机选择一个生肖类型
+          const randomType =
+            zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+
+          // 临时放置并检查是否会形成匹配
+          newGrid[index] = randomType;
+          if (!isPartOfMatch(newGrid, index)) {
+            selectedType = randomType;
+            break;
+          }
+
+          attempts++;
+        }
+
+        // 如果找不到不形成匹配的类型，就使用随机类型
+        if (selectedType === "") {
+          selectedType =
+            zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+        }
+
+        newGrid[index] = selectedType;
+      }
+    }
+  }
+
+  gameGrid.value = newGrid;
+};
+
+// 检查一个位置是否是匹配的一部分
+const isPartOfMatch = (grid, index) => {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
+  const type = grid[index];
+
+  // 检查水平匹配
+  if (col >= 2 && grid[index - 1] === type && grid[index - 2] === type)
+    return true;
+  if (col <= 5 && grid[index + 1] === type && grid[index + 2] === type)
+    return true;
+  if (
+    col >= 1 &&
+    col <= 6 &&
+    grid[index - 1] === type &&
+    grid[index + 1] === type
+  )
+    return true;
+
+  // 检查垂直匹配
+  if (row >= 2 && grid[index - 16] === type && grid[index - 8] === type)
+    return true;
+  if (row <= 5 && grid[index + 8] === type && grid[index + 16] === type)
+    return true;
+  if (
+    row >= 1 &&
+    row <= 6 &&
+    grid[index - 8] === type &&
+    grid[index + 8] === type
+  )
+    return true;
+
+  return false;
+};
+
+// 修改 hasInitialMatches 函数，接受一个网格参数
+const hasInitialMatches = (grid = gameGrid.value) => {
   // 检查水平匹配
   for (let row = 0; row < 8; row++) {
-    let count = 1;
-    let currentType = gameGrid.value[row * 8];
+    for (let col = 0; col < 6; col++) {
+      const index = row * 8 + col;
+      const type = grid[index];
 
-    for (let col = 1; col < 8; col++) {
-      const type = gameGrid.value[row * 8 + col];
-      if (type === currentType) {
-        count++;
-        if (count >= 3) return true;
-      } else {
-        count = 1;
-        currentType = type;
+      if (type === "") continue;
+
+      // 检查右侧两个位置
+      if (col < 6 && grid[index + 1] === type && grid[index + 2] === type) {
+        return true;
       }
     }
   }
 
   // 检查垂直匹配
   for (let col = 0; col < 8; col++) {
-    let count = 1;
-    let currentType = gameGrid.value[col];
+    for (let row = 0; row < 6; row++) {
+      const index = row * 8 + col;
+      const type = grid[index];
 
-    for (let row = 1; row < 8; row++) {
-      const type = gameGrid.value[row * 8 + col];
-      if (type === currentType) {
-        count++;
-        if (count >= 3) return true;
-      } else {
-        count = 1;
-        currentType = type;
+      if (type === "") continue;
+
+      // 检查下方两个位置
+      if (row < 6 && grid[index + 8] === type && grid[index + 16] === type) {
+        return true;
       }
     }
   }
 
   return false;
+};
+
+// 修改 hasPossibleMatches 函数，接受一个网格参数
+const hasPossibleMatches = (grid = gameGrid.value) => {
+  // 创建网格的副本
+  grid = [...grid];
+
+  // 检查水平方向的潜在匹配
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 7; col++) {
+      const index = row * 8 + col;
+      const nextIndex = index + 1;
+
+      if (grid[index] === "" || grid[nextIndex] === "") continue;
+
+      // 保存原始值
+      const originalValue1 = grid[index];
+      const originalValue2 = grid[nextIndex];
+
+      // 临时交换两个相邻的方块
+      grid[index] = originalValue2;
+      grid[nextIndex] = originalValue1;
+
+      // 检查交换后是否形成匹配
+      if (hasInitialMatches(grid)) {
+        // 恢复原始状态
+        grid[index] = originalValue1;
+        grid[nextIndex] = originalValue2;
+        return true;
+      }
+
+      // 恢复原始状态
+      grid[index] = originalValue1;
+      grid[nextIndex] = originalValue2;
+    }
+  }
+
+  // 检查垂直方向的潜在匹配
+  for (let col = 0; col < 8; col++) {
+    for (let row = 0; row < 7; row++) {
+      const index = row * 8 + col;
+      const nextIndex = index + 8;
+
+      if (grid[index] === "" || grid[nextIndex] === "") continue;
+
+      // 保存原始值
+      const originalValue1 = grid[index];
+      const originalValue2 = grid[nextIndex];
+
+      // 临时交换两个相邻的方块
+      grid[index] = originalValue2;
+      grid[nextIndex] = originalValue1;
+
+      // 检查交换后是否形成匹配
+      if (hasInitialMatches(grid)) {
+        // 恢复原始状态
+        grid[index] = originalValue1;
+        grid[nextIndex] = originalValue2;
+        return true;
+      }
+
+      // 恢复原始状态
+      grid[index] = originalValue1;
+      grid[nextIndex] = originalValue2;
+    }
+  }
+
+  return false;
+};
+
+// 优化 getHint 函数，确保提示的准确性
+const getHint = () => {
+  if (
+    !isPlaying.value ||
+    isPaused.value ||
+    hintCount.value <= 0 ||
+    showingHint.value
+  )
+    return;
+
+  // 查找可能的匹配
+  const possibleMatches = findPossibleMatches();
+
+  // 检查是否有可能的匹配
+  if (possibleMatches.length > 0) {
+    // 随机选择一个可能的匹配
+    const randomMatch =
+      possibleMatches[Math.floor(Math.random() * possibleMatches.length)];
+
+    // 确保提示只显示两个需要交换的方块
+    const hintPositions = [randomMatch[0], randomMatch[1]];
+
+    // 显示提示
+    hintTiles.value = hintPositions;
+    showingHint.value = true;
+    hintCount.value--;
+
+    // 播放提示音效
+    playSound("hint");
+
+    // 5秒后隐藏提示
+    setTimeout(() => {
+      showingHint.value = false;
+      hintTiles.value = [];
+    }, 5000);
+
+    // 显示提示消息
+    ElMessage({
+      message: "已显示可能的匹配，请交换高亮方块",
+      type: "success",
+      duration: 3000,
+    });
+  } else {
+    // 没有可能的匹配，显示提示并重新排列
+    ElMessage({
+      message: "没有可消除的组合，正在重新排列...",
+      type: "warning",
+      duration: 3000,
+    });
+
+    // 延迟一下再重新排列，让用户看到消息
+    setTimeout(() => {
+      rearrangeGrid();
+    }, 1500);
+  }
+};
+
+// 添加一个新的函数来播放音效
+const playSound = (type) => {
+  if (isMuted.value) return;
+
+  switch (type) {
+    case "match":
+      audioMatch.currentTime = 0;
+      audioMatch.play().catch((e) => console.error("无法播放消除音效:", e));
+      break;
+    case "success":
+      audioSuccess.currentTime = 0;
+      audioSuccess.play().catch((e) => console.error("无法播放成功音效:", e));
+      break;
+    case "failure":
+      audioFailure.currentTime = 0;
+      audioFailure.play().catch((e) => console.error("无法播放失败音效:", e));
+      break;
+    case "hint":
+      // 可以添加提示音效
+      break;
+  }
+};
+
+// 优化 checkMatches 函数，提高匹配检测的准确性
+const checkMatches = async () => {
+  const matches = new Set<number>();
+  const grid = gameGrid.value;
+
+  // 检查水平匹配
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 6; col++) {
+      const index = row * 8 + col;
+      const type = grid[index];
+
+      if (type === "") continue;
+
+      // 检查右侧两个位置
+      if (col < 6 && grid[index + 1] === type && grid[index + 2] === type) {
+        matches.add(index);
+        matches.add(index + 1);
+        matches.add(index + 2);
+
+        // 检查更长的匹配
+        let nextCol = col + 3;
+        while (nextCol < 8 && grid[row * 8 + nextCol] === type) {
+          matches.add(row * 8 + nextCol);
+          nextCol++;
+        }
+      }
+    }
+  }
+
+  // 检查垂直匹配
+  for (let col = 0; col < 8; col++) {
+    for (let row = 0; row < 6; row++) {
+      const index = row * 8 + col;
+      const type = grid[index];
+
+      if (type === "") continue;
+
+      // 检查下方两个位置
+      if (row < 6 && grid[index + 8] === type && grid[index + 16] === type) {
+        matches.add(index);
+        matches.add(index + 8);
+        matches.add(index + 16);
+
+        // 检查更长的匹配
+        let nextRow = row + 3;
+        while (nextRow < 8 && grid[nextRow * 8 + col] === type) {
+          matches.add(nextRow * 8 + col);
+          nextRow++;
+        }
+      }
+    }
+  }
+
+  // 如果有匹配
+  if (matches.size > 0) {
+    // 增加连击
+    combo.value++;
+    if (combo.value > maxCombo.value) {
+      maxCombo.value = combo.value;
+    }
+
+    // 计算得分
+    const addedScore = calculateScore(matches.size, combo.value);
+    score.value += addedScore;
+
+    // 显示得分动画
+    showScoreAnimation(addedScore, combo.value);
+
+    // 播放消除音效
+    playSound("match");
+
+    // 处理匹配
+    await handleMatches(matches);
+
+    // 检查是否达到目标分数
+    if (score.value >= targetScore.value) {
+      // 播放成功音效
+      playSound("success");
+
+      // 显示成功消息
+      ElMessage({
+        message: `恭喜！你已达到目标分数 ${targetScore.value}！`,
+        type: "success",
+        duration: 3000,
+      });
+
+      // 更新游戏状态
+      isPlaying.value = false;
+      levelStatus.value = "已完成";
+
+      // 显示结果
+      showResult.value = true;
+      gameResult.value = {
+        success: true,
+        message: `恭喜通过第 ${currentLevel.value} 关！\n得分：${score.value}\n最大连击：${maxCombo.value}`,
+      };
+
+      // 停止计时器
+      if (timer) {
+        clearInterval(timer);
+        timer = 0;
+      }
+
+      // 降低背景音乐音量
+      audioBg.volume = 0.3;
+
+      return true;
+    }
+
+    return true;
+  }
+
+  return false;
+};
+
+// 添加得分动画函数
+const showScoreAnimation = (score, comboCount) => {
+  // 这里可以添加得分动画的实现
+  // 例如，可以在界面上显示一个临时的浮动分数
+  console.log(`得分：+${score}，连击：${comboCount}`);
 };
 
 // 修改 startGame 函数，添加控制音乐重启的参数
@@ -609,17 +1268,19 @@ const startGame = (restartMusic = true) => {
   selectedTile.value = null;
   timeWarning.value = false;
   showResult.value = false;
-  hintCount.value = 3; // 重置提示次数
+  hintCount.value = gameConfig.hintsPerLevel(currentLevel.value);
   showingHint.value = false;
   hintTiles.value = [];
 
   // 计算关卡时间和目标分数
   remainingTime.value = Math.max(
-    gameConfig.baseTime - (currentLevel.value - 1) * gameConfig.timeDecrement,
-    gameConfig.minTime
+    gameConfig.baseTimeLimit -
+      (currentLevel.value - 1) * gameConfig.timeLimitDecrement,
+    gameConfig.minTimeLimit
   );
   targetScore.value =
-    gameConfig.baseScore + (currentLevel.value - 1) * gameConfig.scoreIncrement;
+    gameConfig.baseTargetScore +
+    (currentLevel.value - 1) * gameConfig.targetScoreIncrement;
 
   levelStatus.value = "进行中";
 
@@ -646,381 +1307,6 @@ const startGame = (restartMusic = true) => {
   });
 };
 
-// 添加提示功能
-const getHint = () => {
-  if (
-    !isPlaying.value ||
-    isPaused.value ||
-    hintCount.value <= 0 ||
-    showingHint.value
-  )
-    return;
-
-  // 查找可能的匹配
-  const possibleMatches = findPossibleMatches();
-
-  // 检查是否有可能的匹配
-  if (possibleMatches.length > 0) {
-    // 随机选择一个可能的匹配
-    const randomMatch =
-      possibleMatches[Math.floor(Math.random() * possibleMatches.length)];
-
-    // 显示提示
-    hintTiles.value = randomMatch;
-    showingHint.value = true;
-    hintCount.value--;
-
-    // 播放提示音效
-    playSound("hint");
-
-    // 5秒后隐藏提示
-    setTimeout(() => {
-      showingHint.value = false;
-      hintTiles.value = [];
-    }, 5000);
-
-    // 显示提示消息
-    ElMessage({
-      message: "已显示可能的匹配，5秒后消失",
-      type: "success",
-      duration: 3000,
-    });
-  } else {
-    // 没有可能的匹配，显示提示并重新排列
-    ElMessage({
-      message: "没有可消除的组合，正在重新排列...",
-      type: "warning",
-      duration: 3000,
-    });
-
-    // 延迟一下再重新排列，让用户看到消息
-    setTimeout(() => {
-      rearrangeGrid();
-    }, 1500);
-  }
-};
-
-// 查找可能的匹配
-const findPossibleMatches = () => {
-  const possibleMatches = [];
-  const grid = gameGrid.value;
-
-  // 检查水平方向的可能匹配
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 6; col++) {
-      const index = row * 8 + col;
-      const currentType = grid[index];
-
-      if (currentType === "") continue; // 跳过空格
-
-      // 检查右侧两个位置
-      if (
-        col < 6 &&
-        grid[index + 1] === currentType &&
-        grid[index + 2] === currentType
-      ) {
-        possibleMatches.push([index, index + 1, index + 2]);
-      }
-    }
-  }
-
-  // 检查垂直方向的可能匹配
-  for (let row = 0; row < 6; row++) {
-    for (let col = 0; col < 8; col++) {
-      const index = row * 8 + col;
-      const currentType = grid[index];
-
-      if (currentType === "") continue; // 跳过空格
-
-      // 检查下方两个位置
-      if (
-        row < 6 &&
-        grid[index + 8] === currentType &&
-        grid[index + 16] === currentType
-      ) {
-        possibleMatches.push([index, index + 8, index + 16]);
-      }
-    }
-  }
-
-  // 检查潜在的匹配（需要交换的）
-  const potentialMatches = findPotentialMatches();
-  if (potentialMatches.length > 0) {
-    // 将潜在匹配添加到可能匹配列表中
-    possibleMatches.push(...potentialMatches);
-  }
-
-  return possibleMatches;
-};
-
-// 查找潜在的匹配（需要交换的）
-const findPotentialMatches = () => {
-  const potentialMatches = [];
-  const grid = gameGrid.value;
-
-  // 检查水平方向的潜在匹配
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 7; col++) {
-      const index = row * 8 + col;
-      const nextIndex = index + 1;
-
-      if (grid[index] === "" || grid[nextIndex] === "") continue; // 跳过空格
-
-      // 临时交换两个相邻的方块
-      const temp = grid[index];
-      grid[index] = grid[nextIndex];
-      grid[nextIndex] = temp;
-
-      // 模拟交换后检查是否形成匹配
-      // 水平检查
-      if (col > 0 && col < 6) {
-        if (
-          grid[nextIndex] === grid[index - 1] &&
-          grid[nextIndex] === grid[index + 2]
-        ) {
-          potentialMatches.push([index, nextIndex, index - 1, index + 2]);
-        }
-      }
-
-      // 垂直检查 - 左侧方块
-      if (row > 0 && row < 7) {
-        if (
-          grid[nextIndex] === grid[index - 8] &&
-          grid[nextIndex] === grid[index + 8]
-        ) {
-          potentialMatches.push([index, nextIndex, index - 8, index + 8]);
-        }
-      }
-
-      // 垂直检查 - 右侧方块
-      if (row > 0 && row < 7) {
-        if (
-          grid[index] === grid[nextIndex - 8] &&
-          grid[index] === grid[nextIndex + 8]
-        ) {
-          potentialMatches.push([
-            index,
-            nextIndex,
-            nextIndex - 8,
-            nextIndex + 8,
-          ]);
-        }
-      }
-
-      // 恢复原始状态
-      grid[index] = temp;
-    }
-  }
-
-  // 检查垂直方向的潜在匹配
-  for (let col = 0; col < 8; col++) {
-    for (let row = 0; row < 7; row++) {
-      const index = row * 8 + col;
-      const nextIndex = index + 8;
-
-      if (grid[index] === "" || grid[nextIndex] === "") continue; // 跳过空格
-
-      // 临时交换两个相邻的方块
-      const temp = grid[index];
-      grid[index] = grid[nextIndex];
-      grid[nextIndex] = temp;
-
-      // 模拟交换后检查是否形成匹配
-      // 垂直检查
-      if (row > 0 && row < 6) {
-        if (
-          grid[nextIndex] === grid[index - 8] &&
-          grid[nextIndex] === grid[index + 16]
-        ) {
-          potentialMatches.push([index, nextIndex, index - 8, index + 16]);
-        }
-      }
-
-      // 水平检查 - 上方方块
-      if (col > 0 && col < 7) {
-        if (
-          grid[nextIndex] === grid[index - 1] &&
-          grid[nextIndex] === grid[index + 1]
-        ) {
-          potentialMatches.push([index, nextIndex, index - 1, index + 1]);
-        }
-      }
-
-      // 水平检查 - 下方方块
-      if (col > 0 && col < 7) {
-        if (
-          grid[index] === grid[nextIndex - 1] &&
-          grid[index] === grid[nextIndex + 1]
-        ) {
-          potentialMatches.push([
-            index,
-            nextIndex,
-            nextIndex - 1,
-            nextIndex + 1,
-          ]);
-        }
-      }
-
-      // 恢复原始状态
-      grid[index] = temp;
-    }
-  }
-
-  return potentialMatches;
-};
-
-// 修改 checkMatches 函数，增加连击奖励和特殊效果
-const checkMatches = async () => {
-  const matches = new Set<number>();
-  let hasMatches = false;
-
-  // 检查水平匹配（三个或更多相同）
-  for (let row = 0; row < 8; row++) {
-    let count = 1;
-    let currentType = "";
-    let matchStart = 0;
-
-    for (let col = 0; col <= 8; col++) {
-      const index = row * 8 + col;
-      const type = col < 8 ? gameGrid.value[index] : "";
-
-      if (type === currentType && type !== "") {
-        count++;
-      } else {
-        // 如果找到三个或更多相同的
-        if (count >= 3) {
-          for (let i = 0; i < count; i++) {
-            matches.add(matchStart + i);
-          }
-          hasMatches = true;
-        }
-        count = 1;
-        currentType = type;
-        matchStart = index;
-      }
-    }
-  }
-
-  // 检查垂直匹配（三个或更多相同）
-  for (let col = 0; col < 8; col++) {
-    let count = 1;
-    let currentType = "";
-    let matchStart = 0;
-
-    for (let row = 0; row <= 8; row++) {
-      const index = row < 8 ? row * 8 + col : -1;
-      const type = index >= 0 ? gameGrid.value[index] : "";
-
-      if (type === currentType && type !== "") {
-        count++;
-      } else {
-        // 如果找到三个或更多相同的
-        if (count >= 3) {
-          for (let i = 0; i < count; i++) {
-            matches.add(matchStart + i * 8);
-          }
-          hasMatches = true;
-        }
-        count = 1;
-        currentType = type;
-        matchStart = index;
-      }
-    }
-  }
-
-  if (hasMatches) {
-    combo.value++;
-    maxCombo.value = Math.max(maxCombo.value, combo.value);
-
-    // 计算分数，大连击和大消除有额外奖励
-    const matchSize = matches.size;
-    let totalScore = calculateScore(matchSize, combo.value);
-
-    // 大消除奖励（5个以上）
-    if (matchSize >= 5) {
-      totalScore = Math.floor(totalScore * 1.5);
-      // 大消除奖励时间
-      remainingTime.value += Math.min(matchSize - 4, 5); // 最多奖励5秒
-      ElMessage({
-        message: `大消除！+${matchSize - 4}秒`,
-        type: "success",
-        duration: 3000, // 延长显示时间到3秒
-      });
-    }
-
-    score.value += totalScore;
-
-    // 显示连击和得分提示
-    if (combo.value > 1) {
-      ElMessage({
-        message: `${combo.value}连击！+${totalScore}分`,
-        type: "success",
-        duration: 2000, // 延长显示时间到2秒
-      });
-
-      // 连击奖励（每3连击奖励1秒，最多5秒）
-      if (combo.value % 3 === 0 && combo.value <= 15) {
-        const bonusTime = Math.floor(combo.value / 3);
-        remainingTime.value += bonusTime;
-        ElMessage({
-          message: `连击奖励！+${bonusTime}秒`,
-          type: "success",
-          duration: 2000, // 延长显示时间到2秒
-        });
-      }
-    } else {
-      ElMessage({
-        message: `+${totalScore}分`,
-        type: "success",
-        duration: 1500, // 延长显示时间到1.5秒
-      });
-    }
-
-    // 处理消除效果
-    await handleMatches(matches);
-
-    // 检查是否达到目标分数
-    if (score.value >= targetScore.value) {
-      // 播放胜利音效
-      audioSuccess.play();
-
-      // 停止计时器
-      if (timer) {
-        clearInterval(timer);
-        timer = 0;
-      }
-
-      // 显示过关提示
-      showResult.value = true;
-      gameResult.value = {
-        success: true,
-        message: `恭喜获得 ${score.value} 分！最大连击：${maxCombo.value}`,
-      };
-
-      // 更新关卡
-      currentLevel.value++;
-      targetScore.value =
-        gameConfig.baseScore +
-        (currentLevel.value - 1) * gameConfig.scoreIncrement;
-
-      // 不暂停背景音乐，只降低音量
-      audioBg.volume = 0.3;
-
-      // 设置游戏状态
-      isPlaying.value = false;
-      levelStatus.value = "已结束";
-
-      return true;
-    }
-
-    return true;
-  }
-
-  // 只有在没有匹配时才重置连击
-  combo.value = 0;
-  return false;
-};
-
 // 修改 pauseGame 函数
 const pauseGame = () => {
   isPaused.value = !isPaused.value;
@@ -1037,7 +1323,7 @@ const pauseGame = () => {
 // 修改 handleMatches 函数，增加连击奖励和特殊效果
 const handleMatches = async (matches: Set<number>) => {
   // 播放消除音效
-  audioMatch.play();
+  playSound("match");
 
   const newGrid = [...gameGrid.value];
 
@@ -1051,6 +1337,7 @@ const handleMatches = async (matches: Set<number>) => {
   await new Promise((resolve) => setTimeout(resolve, 200));
 
   // 处理下落效果
+  let hasDropped = false;
   for (let col = 0; col < 8; col++) {
     let emptyRow = 7;
     for (let row = 7; row >= 0; row--) {
@@ -1059,34 +1346,24 @@ const handleMatches = async (matches: Set<number>) => {
         if (emptyRow !== row) {
           newGrid[emptyRow * 8 + col] = newGrid[index];
           newGrid[index] = "";
+          hasDropped = true;
         }
         emptyRow--;
       }
     }
-
-    // 填充新的生肖
-    for (let row = emptyRow; row >= 0; row--) {
-      const zodiacTypes = [
-        "rat",
-        "ox",
-        "tiger",
-        "rabbit",
-        "dragon",
-        "snake",
-        "horse",
-        "goat",
-        "monkey",
-        "rooster",
-        "dog",
-        "pig",
-      ];
-      newGrid[row * 8 + col] =
-        zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
-    }
   }
 
+  // 如果有方块下落，更新网格并等待动画完成
+  if (hasDropped) {
+    gameGrid.value = [...newGrid];
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+
+  // 填充新的生肖，使用优化后的填充函数
+  fillEmptySpacesWithoutMatches(newGrid);
+
   // 更新网格
-  gameGrid.value = newGrid;
+  gameGrid.value = [...newGrid];
 
   // 检查新的网格是否有可能的匹配
   if (!hasPossibleMatches()) {
@@ -1094,11 +1371,11 @@ const handleMatches = async (matches: Set<number>) => {
     ElMessage({
       message: "没有可消除的组合，重新排列棋盘...",
       type: "info",
-      duration: 3000, // 延长显示时间到3秒
+      duration: 3000,
     });
 
     // 添加一个短暂的延迟，让玩家看到提示
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // 延长延迟到1秒
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // 重新初始化网格直到有可消除的组合
     do {
@@ -1108,13 +1385,14 @@ const handleMatches = async (matches: Set<number>) => {
     return;
   }
 
-  // 检查新的匹配
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  await checkMatches();
+  // 不再自动检查新的匹配，让玩家自己寻找和消除
+  // 这样可以避免连锁反应
 };
 
-// 修改 initializeGrid 函数，确保初始化时有可消除的组合
-const initializeGrid = () => {
+// 添加一个新的填充函数，确保新生成的方块不会形成匹配
+const fillEmptySpacesWithoutMatches = (grid) => {
+  const zodiacTypesCount = gameConfig.zodiacTypesPerLevel(currentLevel.value);
+
   const zodiacTypes = [
     "rat",
     "ox",
@@ -1128,12 +1406,61 @@ const initializeGrid = () => {
     "rooster",
     "dog",
     "pig",
-  ];
+  ].slice(0, zodiacTypesCount);
 
-  // 生成新的网格
-  gameGrid.value = Array(64)
-    .fill("")
-    .map(() => zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)]);
+  // 从底部向上填充空白位置
+  for (let col = 0; col < 8; col++) {
+    for (let row = 7; row >= 0; row--) {
+      const index = row * 8 + col;
+
+      if (grid[index] === "") {
+        // 获取周围已有的生肖类型
+        const surroundingTypes = getSurroundingTypes(grid, index);
+
+        // 尝试找到一个不会立即形成匹配的生肖类型
+        let selectedType = "";
+        let attempts = 0;
+        const maxAttempts = 15; // 增加尝试次数
+
+        while (attempts < maxAttempts) {
+          // 随机选择一个生肖类型
+          const randomType =
+            zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+
+          // 临时放置并检查是否会形成匹配
+          grid[index] = randomType;
+
+          // 更严格的检查：确保不会形成任何匹配
+          if (!isPartOfMatch(grid, index)) {
+            selectedType = randomType;
+            break;
+          }
+
+          attempts++;
+        }
+
+        // 如果找不到不形成匹配的类型，就使用随机类型
+        if (selectedType === "") {
+          // 尝试避开周围已有的类型
+          const availableTypes = zodiacTypes.filter(
+            (type) => !surroundingTypes.includes(type)
+          );
+
+          if (availableTypes.length > 0) {
+            selectedType =
+              availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          } else {
+            selectedType =
+              zodiacTypes[Math.floor(Math.random() * zodiacTypes.length)];
+          }
+        }
+
+        grid[index] = selectedType;
+      }
+    }
+  }
+
+  return grid;
 };
 
 // 修改选择方块逻辑
@@ -1219,7 +1546,9 @@ const swapTiles = async (index1: number, index2: number) => {
 const calculateScore = (matchCount: number, currentCombo: number) => {
   const baseScore = matchCount * 10; // 每个方块10分
   const comboMultiplier =
-    1 + Math.min(currentCombo - 1, gameConfig.maxComboMultiplier) * 0.5;
+    1 +
+    Math.min(currentCombo - 1, gameConfig.maxComboMultiplier) *
+      gameConfig.comboBonus(currentLevel.value);
   return Math.floor(baseScore * comboMultiplier);
 };
 
@@ -1276,180 +1605,317 @@ const handleGameOver = () => {
   audioBg.volume = 0.3;
 };
 
-// 修改 continueGame 函数，优化音乐播放逻辑
-const continueGame = () => {
-  // 确保清除任何可能存在的计时器
-  if (timer) {
-    clearInterval(timer);
-    timer = 0;
-  }
+// 修复进入下一关的逻辑
+const goToNextLevel = () => {
+  // 增加关卡数
+  currentLevel.value++;
 
+  // 计算新关卡的目标分数
+  targetScore.value =
+    gameConfig.baseTargetScore +
+    (currentLevel.value - 1) * gameConfig.targetScoreIncrement;
+
+  // 计算新关卡的时间限制
+  remainingTime.value = Math.max(
+    gameConfig.baseTimeLimit -
+      (currentLevel.value - 1) * gameConfig.timeLimitDecrement,
+    gameConfig.minTimeLimit
+  );
+
+  // 增加奖励时间
+  remainingTime.value += gameConfig.bonusTimePerLevel;
+
+  // 重置游戏状态
+  score.value = 0;
+  combo.value = 0;
+  maxCombo.value = 0;
+  timeWarning.value = false;
   showResult.value = false;
 
-  // 如果是成功过关，给予奖励
+  // 更新提示次数
+  hintCount.value = gameConfig.hintsPerLevel(currentLevel.value);
+
+  // 重置其他状态
+  showingHint.value = false;
+  hintTiles.value = [];
+  selectedTile.value = null;
+
+  // 初始化新的游戏网格
+  initializeGrid();
+
+  // 设置游戏状态为进行中
+  levelStatus.value = "进行中";
+  isPlaying.value = true;
+
+  // 开始计时器
+  startTimer();
+
+  // 显示新关卡信息
+  ElMessage({
+    message: `第 ${currentLevel.value} 关开始！\n目标分数：${
+      targetScore.value
+    }\n时间限制：${formatTime(remainingTime.value)}`,
+    type: "success",
+    duration: 5000,
+  });
+};
+
+// 修改结果对话框的确认按钮处理函数
+const handleResultConfirm = () => {
   if (gameResult.value.success) {
-    // 每过一关增加一次提示机会
-    hintCount.value = 3 + Math.min(currentLevel.value - 1, 2); // 最多5次提示
-
-    // 每过一关奖励额外时间
-    const bonusTime = gameConfig.bonusTimePerLevel * (currentLevel.value - 1);
-
-    ElMessage({
-      message: `进入第${currentLevel.value}关！奖励${bonusTime}秒额外时间和${hintCount.value}次提示机会`,
-      type: "success",
-      duration: 5000, // 延长显示时间到5秒
-    });
-
-    // 恢复背景音乐音量
-    audioBg.volume = 1.0;
-
-    // 不重新开始背景音乐，只确保它在播放
-    if (audioBg.paused) {
-      audioBg.play().catch((e) => console.error("无法播放背景音乐:", e));
-    }
+    // 如果成功，进入下一关
+    goToNextLevel();
   } else {
-    // 如果是失败，重置游戏状态
+    // 如果失败，重新开始游戏
     initializeGame();
-    // 重新开始背景音乐
-    audioBg.currentTime = 0;
-    audioBg.volume = 1.0;
-    audioBg.play().catch((e) => console.error("无法播放背景音乐:", e));
   }
 
-  setTimeout(() => {
-    startGame(false); // 传递false参数表示不重新开始音乐
-  }, 100);
+  // 隐藏结果对话框
+  showResult.value = false;
 };
 
 // 添加banner背景图片
 const bannerBg = new URL("../assets/images/banners/youxi.jpg", import.meta.url)
   .href;
 
-// 优化 hasPossibleMatches 函数，使其更准确地检测可能的匹配
-const hasPossibleMatches = () => {
-  const grid = gameGrid.value;
+// 优化 findPossibleMatches 函数
+const findPossibleMatches = () => {
+  const possibleMatches = [];
+  const grid = [...gameGrid.value];
+
+  // 检查水平方向的可能匹配
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 6; col++) {
+      const index = row * 8 + col;
+      const currentType = grid[index];
+
+      if (currentType === "") continue;
+
+      // 检查右侧两个位置
+      if (
+        col < 6 &&
+        grid[index + 1] === currentType &&
+        grid[index + 2] === currentType
+      ) {
+        possibleMatches.push([index, index + 1, index + 2]);
+      }
+    }
+  }
+
+  // 检查垂直方向的可能匹配
+  for (let row = 0; row < 6; row++) {
+    for (let col = 0; col < 8; col++) {
+      const index = row * 8 + col;
+      const currentType = grid[index];
+
+      if (currentType === "") continue;
+
+      // 检查下方两个位置
+      if (
+        row < 6 &&
+        grid[index + 8] === currentType &&
+        grid[index + 16] === currentType
+      ) {
+        possibleMatches.push([index, index + 8, index + 16]);
+      }
+    }
+  }
+
+  // 检查潜在的匹配（需要交换的）
+  const potentialMatches = findPotentialMatches();
+
+  // 将潜在匹配添加到可能匹配列表中
+  possibleMatches.push(...potentialMatches);
+
+  return possibleMatches;
+};
+
+// 查找潜在的匹配（需要交换的）- 确保返回格式一致
+const findPotentialMatches = () => {
+  const potentialMatches = [];
+  const grid = [...gameGrid.value];
 
   // 检查水平方向的潜在匹配
   for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 6; col++) {
-      const current = grid[row * 8 + col];
+    for (let col = 0; col < 7; col++) {
+      const index = row * 8 + col;
+      const nextIndex = index + 1;
 
-      // 检查形如 "ABA" 的模式
-      if (col < 5 && current === grid[row * 8 + col + 2] && current !== "") {
-        // 检查上方是否有可交换的相同类型
-        if (row > 0 && grid[(row - 1) * 8 + col + 1] === current) {
-          return true;
-        }
-        // 检查下方是否有可交换的相同类型
-        if (row < 7 && grid[(row + 1) * 8 + col + 1] === current) {
-          return true;
-        }
+      if (grid[index] === "" || grid[nextIndex] === "") continue;
+
+      // 保存原始值
+      const originalValue1 = grid[index];
+      const originalValue2 = grid[nextIndex];
+
+      // 临时交换两个相邻的方块
+      grid[index] = originalValue2;
+      grid[nextIndex] = originalValue1;
+
+      // 检查是否形成匹配
+      let foundMatch = false;
+
+      // 水平检查 - 左侧方块
+      if (
+        col > 1 &&
+        grid[index] === grid[index - 1] &&
+        grid[index] === grid[index - 2]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
       }
 
-      // 检查形如 "AAB" 的模式，交换后变成 "BAA"
-      if (col < 6 && current === grid[row * 8 + col + 1] && current !== "") {
-        // 检查右侧是否有可交换的相同类型
-        if (col < 5 && grid[row * 8 + col + 2] === current) {
-          return true;
-        }
-        // 检查上方右侧是否有可交换的相同类型
-        if (row > 0 && grid[(row - 1) * 8 + col + 2] === current) {
-          return true;
-        }
-        // 检查下方右侧是否有可交换的相同类型
-        if (row < 7 && grid[(row + 1) * 8 + col + 2] === current) {
-          return true;
-        }
+      // 水平检查 - 右侧方块
+      if (
+        !foundMatch &&
+        col < 5 &&
+        grid[nextIndex] === grid[nextIndex + 1] &&
+        grid[nextIndex] === grid[nextIndex + 2]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
       }
+
+      // 垂直检查 - 左侧方块
+      if (
+        !foundMatch &&
+        row > 1 &&
+        grid[index] === grid[index - 8] &&
+        grid[index] === grid[index - 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 垂直检查 - 右侧方块
+      if (
+        !foundMatch &&
+        row > 1 &&
+        grid[nextIndex] === grid[nextIndex - 8] &&
+        grid[nextIndex] === grid[nextIndex - 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 垂直检查 - 左侧方块向下
+      if (
+        !foundMatch &&
+        row < 6 &&
+        grid[index] === grid[index + 8] &&
+        grid[index] === grid[index + 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 垂直检查 - 右侧方块向下
+      if (
+        !foundMatch &&
+        row < 6 &&
+        grid[nextIndex] === grid[nextIndex + 8] &&
+        grid[nextIndex] === grid[nextIndex + 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 恢复原始状态 - 使用保存的原始值
+      grid[index] = originalValue1;
+      grid[nextIndex] = originalValue2;
     }
   }
 
   // 检查垂直方向的潜在匹配
   for (let col = 0; col < 8; col++) {
-    for (let row = 0; row < 6; row++) {
-      const current = grid[row * 8 + col];
+    for (let row = 0; row < 7; row++) {
+      const index = row * 8 + col;
+      const nextIndex = index + 8;
 
-      // 检查形如 "ABA" 的模式（垂直）
-      if (row < 5 && current === grid[(row + 2) * 8 + col] && current !== "") {
-        // 检查左侧是否有可交换的相同类型
-        if (col > 0 && grid[(row + 1) * 8 + col - 1] === current) {
-          return true;
-        }
-        // 检查右侧是否有可交换的相同类型
-        if (col < 7 && grid[(row + 1) * 8 + col + 1] === current) {
-          return true;
-        }
-      }
+      if (grid[index] === "" || grid[nextIndex] === "") continue;
 
-      // 检查形如 "AAB" 的模式（垂直），交换后变成 "BAA"
-      if (row < 6 && current === grid[(row + 1) * 8 + col] && current !== "") {
-        // 检查下方是否有可交换的相同类型
-        if (row < 5 && grid[(row + 2) * 8 + col] === current) {
-          return true;
-        }
-        // 检查左侧下方是否有可交换的相同类型
-        if (col > 0 && grid[(row + 2) * 8 + col - 1] === current) {
-          return true;
-        }
-        // 检查右侧下方是否有可交换的相同类型
-        if (col < 7 && grid[(row + 2) * 8 + col + 1] === current) {
-          return true;
-        }
-      }
-    }
-  }
+      // 保存原始值
+      const originalValue1 = grid[index];
+      const originalValue2 = grid[nextIndex];
 
-  // 检查直接的三连匹配
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 6; col++) {
-      // 检查水平三连
+      // 临时交换两个相邻的方块
+      grid[index] = originalValue2;
+      grid[nextIndex] = originalValue1;
+
+      // 检查是否形成匹配
+      let foundMatch = false;
+
+      // 水平检查 - 上方方块
       if (
-        grid[row * 8 + col] === grid[row * 8 + col + 1] &&
-        grid[row * 8 + col] === grid[row * 8 + col + 2] &&
-        grid[row * 8 + col] !== ""
+        col > 1 &&
+        grid[index] === grid[index - 1] &&
+        grid[index] === grid[index - 2]
       ) {
-        return true;
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
       }
-    }
-  }
 
-  for (let col = 0; col < 8; col++) {
-    for (let row = 0; row < 6; row++) {
-      // 检查垂直三连
+      // 水平检查 - 上方方块向右
       if (
-        grid[row * 8 + col] === grid[(row + 1) * 8 + col] &&
-        grid[row * 8 + col] === grid[(row + 2) * 8 + col] &&
-        grid[row * 8 + col] !== ""
+        !foundMatch &&
+        col < 6 &&
+        grid[index] === grid[index + 1] &&
+        grid[index] === grid[index + 2]
       ) {
-        return true;
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
       }
+
+      // 水平检查 - 下方方块
+      if (
+        !foundMatch &&
+        col > 1 &&
+        grid[nextIndex] === grid[nextIndex - 1] &&
+        grid[nextIndex] === grid[nextIndex - 2]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 水平检查 - 下方方块向右
+      if (
+        !foundMatch &&
+        col < 6 &&
+        grid[nextIndex] === grid[nextIndex + 1] &&
+        grid[nextIndex] === grid[nextIndex + 2]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 垂直检查 - 上方方块
+      if (
+        !foundMatch &&
+        row > 1 &&
+        grid[index] === grid[index - 8] &&
+        grid[index] === grid[index - 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 垂直检查 - 下方方块
+      if (
+        !foundMatch &&
+        row < 5 &&
+        grid[nextIndex] === grid[nextIndex + 8] &&
+        grid[nextIndex] === grid[nextIndex + 16]
+      ) {
+        potentialMatches.push([index, nextIndex]);
+        foundMatch = true;
+      }
+
+      // 恢复原始状态 - 使用保存的原始值
+      grid[index] = originalValue1;
+      grid[nextIndex] = originalValue2;
     }
   }
 
-  return false;
-};
-
-// 添加 playSound 函数
-const playSound = (type: string) => {
-  if (isMuted.value) return;
-
-  // 创建音效对象
-  const sounds: Record<string, HTMLAudioElement> = {
-    match: audioMatch,
-    success: audioSuccess,
-    failure: audioFailure,
-    hint: audioMatch, // 使用匹配音效作为提示音效
-  };
-
-  if (sounds[type]) {
-    // 避免音频播放错误
-    try {
-      sounds[type].currentTime = 0;
-      sounds[type].play().catch((e) => console.error("播放音效失败:", e));
-    } catch (error) {
-      console.error("播放音效时出错:", error);
-    }
-  }
+  return potentialMatches;
 };
 
 // 修改 rearrangeGrid 函数
@@ -1647,19 +2113,27 @@ onUnmounted(() => {
 
 /* 弹窗样式 */
 :deep(.game-dialog .el-dialog) {
-  background: rgba(31, 41, 55, 0.95);
-  backdrop-filter: blur(10px);
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 :deep(.game-dialog .el-dialog__header) {
-  color: white;
+  padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent; /* 确保头部背景透明 */
+}
+
+:deep(.game-dialog .el-dialog__title) {
+  @apply text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-red-500;
 }
 
 :deep(.game-dialog .el-dialog__body) {
+  padding: 0;
   color: white;
+  background: transparent; /* 确保内容区背景透明 */
 }
 
 /* 响应式调整 */
@@ -1709,5 +2183,92 @@ onUnmounted(() => {
 
 .game-tile.cursor-not-allowed .tile-glow {
   display: none;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* 添加渐变文字效果 */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 via-red-500 to-pink-500;
+  background-size: 200% 200%;
+  animation: gradient 4s ease infinite;
+}
+
+/* 添加动画效果 */
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* 修改按钮样式 */
+:deep(.game-dialog .el-button--primary) {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  border: none;
+  &:hover {
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+  }
+}
+
+/* 添加渐变背景动画 */
+:deep(.game-dialog) {
+  .el-dialog {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        45deg,
+        rgba(31, 41, 55, 0.95),
+        rgba(17, 24, 39, 0.95)
+      );
+      z-index: -1;
+    }
+  }
+}
+
+/* 确保弹窗内所有元素的背景都是透明的 */
+:deep(.game-dialog) {
+  .el-dialog__header,
+  .el-dialog__body,
+  .el-dialog__footer {
+    background: transparent !important;
+  }
 }
 </style>

@@ -111,6 +111,40 @@
         </div>
       </div>
 
+      <!-- 在产品展示区上方添加淘宝店铺链接 -->
+      <div
+        class="container mx-auto px-4 mb-8 animate-fadeIn animation-delay-400"
+      >
+        <div
+          class="bg-[#ff4400]/10 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between border border-[#ff4400]/20 shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          <div class="flex items-center space-x-4 mb-4 md:mb-0">
+            <div
+              class="w-16 h-16 rounded-full bg-[#ff4400] flex items-center justify-center text-white text-2xl shadow-lg"
+            >
+              <i class="ri-shopping-bag-line"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800">
+                凤翔泥塑官方淘宝店
+              </h3>
+              <p class="text-gray-600">
+                购买正品凤翔泥塑作品，支持非遗文化传承
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://shop342789194.m.taobao.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#ff4400] to-[#ff7744] text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+          >
+            <span>立即前往淘宝店铺</span>
+            <i class="ri-arrow-right-line"></i>
+          </a>
+        </div>
+      </div>
+
       <!-- 产品展示网格 -->
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16"
@@ -155,8 +189,17 @@
               </div>
               <!-- 悬停遮罩 -->
               <div
-                class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              ></div>
+                class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center"
+              >
+                <!-- 放大查看按钮 -->
+                <button
+                  @click.stop="previewImage(product.image)"
+                  class="bg-white/90 backdrop-blur-sm text-primary p-3 rounded-full shadow-lg transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:scale-110"
+                  title="放大查看"
+                >
+                  <el-icon class="text-xl"><i-ep-zoom-in /></el-icon>
+                </button>
+              </div>
             </div>
 
             <!-- 产品信息 -->
@@ -179,20 +222,6 @@
                 >
                   {{ tag }}
                 </el-tag>
-              </div>
-
-              <!-- 查看详情按钮 (悬停时显示) -->
-              <div
-                class="mt-4 pt-4 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-y-4 group-hover:translate-y-0"
-              >
-                <el-button
-                  type="primary"
-                  text
-                  class="w-full flex justify-center items-center gap-2"
-                >
-                  <el-icon><i-ep-zoom-in /></el-icon>
-                  查看详情
-                </el-button>
               </div>
             </div>
           </div>
@@ -223,11 +252,21 @@
 
     <!-- 返回顶部按钮 -->
     <el-backtop :right="40" :bottom="40" />
+
+    <!-- 图片预览组件 -->
+    <el-image-viewer
+      v-if="showViewer"
+      :url-list="[previewUrl]"
+      :teleported="true"
+      :z-index="2000"
+      @close="showViewer = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "@vue/runtime-dom";
+import { ElImageViewer } from "element-plus";
 
 // 定义类型
 interface Category {
@@ -288,22 +327,22 @@ const products = ref([
   // 杯具系列
   {
     id: 1,
-    title: "祥瑞虎娃杯",
+    title: "凤翔泥塑茶杯套装",
     description:
-      "杯身饰以凤翔泥塑经典图案，虎娃形象灵动可爱，寓意守护平安。细腻的笔触勾勒出虎娃的灵动神态，色彩浓艳且层次丰富。",
+      "融合凤翔泥塑传统工艺与现代陶瓷技术，杯身饰以泥塑经典图案，色彩鲜艳饱满，造型生动有趣，既是实用茶具，也是传统文化的艺术载体。",
     category: "文创杯具",
     tagType: "success",
-    tags: ["传统图案", "实用器皿", "吉祥寓意"],
+    tags: ["凤翔泥塑", "传统工艺", "文化收藏"],
     image: cup1,
   },
   {
     id: 2,
-    title: "传统纹样杯",
+    title: "泥塑艺术茶具",
     description:
-      "杯身融入传统纹样设计，简约而不失韵味。每一笔勾勒都传承着匠人的用心，让饮品更具文化气息。",
+      "茶具表面采用凤翔泥塑浮雕工艺，以传统吉祥图案为主题，色彩明快，造型古朴，每一件都凝聚着非遗传承人的匠心与智慧。",
     category: "文创杯具",
     tagType: "success",
-    tags: ["传统纹样", "日常实用", "文化传承"],
+    tags: ["浮雕工艺", "吉祥图案", "非遗传承"],
     image: cup2,
   },
   {
@@ -318,11 +357,12 @@ const products = ref([
   },
   {
     id: 4,
-    title: "禅意茶杯",
-    description: "简约的东方美学设计，融入传统纹样，让品茶更具文化意境。",
+    title: "泥塑纹理陶杯",
+    description:
+      "将凤翔泥塑的传统纹理与现代陶瓷工艺相结合，保留了泥塑的质朴肌理和鲜明色彩，简约而不失传统韵味，是日常生活中的艺术品。",
     category: "文创杯具",
     tagType: "success",
-    tags: ["禅意设计", "茶文化", "东方美学"],
+    tags: ["传统纹理", "现代工艺", "日常艺术"],
     image: cup4,
   },
 
@@ -408,20 +448,22 @@ const products = ref([
   },
   {
     id: 13,
-    title: "运动卫衣",
-    description: "将传统图案与现代运动服饰结合，让传统文化融入日常运动生活。",
+    title: "凤翔泥塑图案T恤",
+    description:
+      "将凤翔泥塑的传统图案印制在舒适的T恤上，色彩鲜明的泥塑元素与简约的T恤设计相得益彰，让传统文化融入日常穿搭。",
     category: "文创服饰",
     tagType: "danger",
-    tags: ["运动风格", "传统元素", "日常穿搭"],
+    tags: ["泥塑图案", "休闲T恤", "日常穿搭"],
     image: fashion3,
   },
   {
     id: 14,
-    title: "休闲T恤",
-    description: "以凤翔泥塑元素点缀休闲服装，打造独特的文化时尚风格。",
+    title: "泥塑艺术印花T恤",
+    description:
+      "以凤翔泥塑中的经典形象为灵感，通过现代印花工艺呈现在T恤上，保留了泥塑艺术的生动与色彩，是传统与现代的时尚碰撞。",
     category: "文创服饰",
     tagType: "danger",
-    tags: ["休闲风格", "文化元素", "时尚设计"],
+    tags: ["艺术印花", "创意T恤", "文化时尚"],
     image: fashion4,
   },
 
@@ -470,6 +512,16 @@ const bannerBg = new URL(
   "../assets/images/banners/wenchuang.jpg",
   import.meta.url
 ).href;
+
+// 图片预览相关状态
+const showViewer = ref(false);
+const previewUrl = ref("");
+
+// 预览图片的方法
+const previewImage = (url: string) => {
+  previewUrl.value = url;
+  showViewer.value = true;
+};
 </script>
 
 <style scoped>

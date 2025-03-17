@@ -61,6 +61,14 @@
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">
           通过生动有趣的视频形式，带您了解凤翔泥塑的历史文化与制作工艺
         </p>
+
+        <!-- 添加整体免责声明 -->
+        <div class="mt-4 pt-2 border-t border-gray-200 max-w-2xl mx-auto">
+          <p class="text-xs text-gray-400 italic">
+            视频免责声明：本页面展示的视频内容均来源于网络，仅用于非遗文化传播与教育目的，版权归原作者所有。
+            如有侵权，请通过联系页面与我们取得联系，我们将立即删除相关内容。
+          </p>
+        </div>
       </div>
 
       <!-- 视频展示区域 -->

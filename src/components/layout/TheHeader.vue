@@ -111,7 +111,7 @@
           </div>
 
           <!-- 右侧时间显示部分 -->
-          <div class="hidden lg:flex items-center space-x-2">
+          <div class="hidden lg:flex items-center space-x-4">
             <el-card class="time-card" shadow="hover">
               <div class="flex items-center">
                 <!-- 日期部分 -->
