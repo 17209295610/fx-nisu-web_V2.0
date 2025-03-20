@@ -364,13 +364,13 @@ const carouselSlides = ref([
 
 const characters = ref([
   {
-    name: "泥丫丫",
+    name: "泥丫丫【2D形象】",
     description: "凤翔泥塑的文化传承者，以可爱的造型和传统服饰展现非遗魅力。",
     image: img1,
     tags: ["文化传承", "传统服饰", "艺术形象"],
   },
   {
-    name: "泥囡囡",
+    name: "泥囡囡【3D形象】",
     description: "威武可爱的祥瑞形象，融合传统虎文化元素，象征着力量与勇气。",
     image: img3,
     tags: ["传统文化", "祥瑞形象", "力量象征"],

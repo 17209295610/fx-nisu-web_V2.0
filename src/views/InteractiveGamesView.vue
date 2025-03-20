@@ -41,7 +41,7 @@
             <div
               class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"
             ></div>
-          </div>
+        </div>
           <div class="absolute inset-0 flex items-center justify-center">
             <div
               class="w-12 h-12 border-4 border-blue-400 border-b-transparent rounded-full animate-spin-slow"
@@ -410,7 +410,7 @@
               </el-icon>
               <span>{{ gameResult.success ? "进入下一关" : "重新开始" }}</span>
             </div>
-          </el-button>
+            </el-button>
         </div>
       </div>
     </el-dialog>
@@ -1243,10 +1243,10 @@ const showScoreAnimation = (score, comboCount) => {
 
 // 修改 startGame 函数，添加控制音乐重启的参数
 const startGame = (restartMusic = true) => {
-  if (timer) {
-    clearInterval(timer);
-    timer = 0;
-  }
+      if (timer) {
+        clearInterval(timer);
+        timer = 0;
+      }
 
   // 只有在需要重新开始音乐时才重置
   if (restartMusic) {
@@ -1278,7 +1278,7 @@ const startGame = (restartMusic = true) => {
       (currentLevel.value - 1) * gameConfig.timeLimitDecrement,
     gameConfig.minTimeLimit
   );
-  targetScore.value =
+      targetScore.value =
     gameConfig.baseTargetScore +
     (currentLevel.value - 1) * gameConfig.targetScoreIncrement;
 
@@ -1651,11 +1651,11 @@ const goToNextLevel = () => {
   startTimer();
 
   // 显示新关卡信息
-  ElMessage({
+    ElMessage({
     message: `第 ${currentLevel.value} 关开始！\n目标分数：${
       targetScore.value
     }\n时间限制：${formatTime(remainingTime.value)}`,
-    type: "success",
+      type: "success",
     duration: 5000,
   });
 };
@@ -1703,7 +1703,7 @@ const findPossibleMatches = () => {
   }
 
   // 检查垂直方向的可能匹配
-  for (let row = 0; row < 6; row++) {
+    for (let row = 0; row < 6; row++) {
     for (let col = 0; col < 8; col++) {
       const index = row * 8 + col;
       const currentType = grid[index];
