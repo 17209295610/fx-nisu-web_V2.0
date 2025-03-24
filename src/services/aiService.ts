@@ -25,17 +25,20 @@ interface ChatCompletionResponse {
   }[];
 }
 
-// 修改 API 端点路径 - 使用标准 v1 路径
-const API_URL = '/api/deepseek/v1/chat/completions';  
+// 修改 API 服务代码，适应Netlify环境
+const API_URL = import.meta.env.PROD 
+  ? '/.netlify/functions/deepseek-proxy'  // 使用Netlify函数
+  : '/api/deepseek/v1/chat/completions';  // 开发环境
 
-// 或者也可以尝试直接使用 DeepSeek 的 API URL (如果代理有问题)
-// const API_URL = 'https://api.deepseek.com/v1/chat/completions';
-
-// 实际项目中，API key应该存储在环境变量中
+// 获取API密钥
 const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
 
 // 确认模型名称
 const MODEL_NAME = 'deepseek-chat'; // 或尝试 'deepseek-1.5-chat'，根据 DeepSeek 最新文档
+
+// 在API调用开始添加日志
+console.log("环境:", import.meta.env.PROD ? "生产环境" : "开发环境");
+console.log("API密钥状态:", API_KEY ? "已设置" : "未设置");
 
 /**
  * 与DeepSeek API进行通信获取AI回复

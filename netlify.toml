@@ -1,0 +1,11 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# 设置API代理
+[[redirects]]
+  from = "/api/deepseek/*"
+  to = "https://api.deepseek.com/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"} 
