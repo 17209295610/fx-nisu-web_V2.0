@@ -1,9 +1,14 @@
 const axios = require('axios');
 
 exports.handler = async function(event, context) {
-  // 添加详细的日志
-  console.log('Function environment:', process.env.NODE_ENV);
-  console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY); // 注意这里改变了变量名
+  // 添加更详细的环境日志
+  console.log('Function environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    hasApiKey: !!process.env.VITE_DEEPSEEK_API_KEY,
+    envVars: Object.keys(process.env)
+      .filter(key => !key.includes('KEY'))
+      .reduce((acc, key) => ({...acc, [key]: process.env[key]}), {})
+  });
   
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -13,13 +18,20 @@ exports.handler = async function(event, context) {
     // 解析请求体
     const body = JSON.parse(event.body);
     
-    // 检查API密钥
-    const apiKey = process.env.DEEPSEEK_API_KEY; // 直接使用DEEPSEEK_API_KEY
+    // 检查API密钥 - 使用VITE_前缀
+    const apiKey = process.env.VITE_DEEPSEEK_API_KEY;
     if (!apiKey) {
       console.error('API key is not set in environment');
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'API key configuration error' })
+        body: JSON.stringify({ 
+          error: 'API key configuration error',
+          debug: {
+            hasKey: !!process.env.VITE_DEEPSEEK_API_KEY,
+            envKeys: Object.keys(process.env)
+              .filter(key => !key.includes('KEY'))
+          }
+        })
       };
     }
 
@@ -45,11 +57,11 @@ exports.handler = async function(event, context) {
       body: JSON.stringify(response.data)
     };
   } catch (error) {
-    // 增强错误日志
     console.error('API Error details:', {
       message: error.message,
       response: error.response?.data,
-      status: error.response?.status
+      status: error.response?.status,
+      stack: error.stack
     });
     
     return {
@@ -57,7 +69,12 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({ 
         error: '调用AI服务失败',
         details: error.message,
-        status: error.response?.status
+        status: error.response?.status,
+        debug: {
+          hasKey: !!process.env.VITE_DEEPSEEK_API_KEY,
+          envKeys: Object.keys(process.env)
+            .filter(key => !key.includes('KEY'))
+        }
       })
     };
   }

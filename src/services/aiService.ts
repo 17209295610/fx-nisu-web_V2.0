@@ -25,8 +25,8 @@ interface ChatCompletionResponse {
   }[];
 }
 
-// 修改环境变量的获取方式
-const API_KEY = import.meta.env.DEEPSEEK_API_KEY || ''; // 移除VITE_前缀
+// 修改环境变量的获取方式 - 使用VITE_前缀
+const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
 
 // 修改API URL构建
 const API_URL = import.meta.env.PROD 
@@ -36,11 +36,18 @@ const API_URL = import.meta.env.PROD
 // 确认模型名称
 const MODEL_NAME = 'deepseek-chat'; // 或尝试 'deepseek-1.5-chat'，根据 DeepSeek 最新文档
 
-// 添加更多日志
+// 添加更详细的环境日志
 console.log("当前环境:", {
   NODE_ENV: import.meta.env.MODE,
   isProd: import.meta.env.PROD,
-  apiUrl: API_URL
+  apiUrl: API_URL,
+  hasApiKey: !!import.meta.env.VITE_DEEPSEEK_API_KEY,
+  envVars: Object.keys(import.meta.env)
+    .filter(key => key.startsWith('VITE_'))
+    .reduce((acc, key) => ({
+      ...acc,
+      [key]: key.includes('KEY') ? '[HIDDEN]' : import.meta.env[key]
+    }), {})
 });
 
 /**

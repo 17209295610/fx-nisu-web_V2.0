@@ -9,6 +9,10 @@ NODE_VERSION = "18"
 directory = "netlify/functions"
 node_bundler = "esbuild"
 
+# 确保环境变量可用于函数
+[context.production.environment]
+  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
+
 # 设置API代理
 [[redirects]]
   from = "/.netlify/functions/*"
