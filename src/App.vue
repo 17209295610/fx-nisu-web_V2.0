@@ -43,6 +43,9 @@
         <span class="text-xs">立即购买</span>
       </a>
     </div>
+
+    <!-- 添加AI聊天组件 -->
+    <AIChatBot />
   </el-config-provider>
 </template>
 
@@ -54,6 +57,7 @@ import TheHeader from "@/components/layout/TheHeader.vue";
 import TheFooter from "@/components/layout/TheFooter.vue";
 import BackToTop from "@/components/common/BackToTop.vue";
 import MobileTabBar from "@/components/layout/MobileTabBar.vue";
+import AIChatBot from "@/components/ai/AIChatBot.vue";
 </script>
 
 <style>

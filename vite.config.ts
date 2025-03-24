@@ -44,5 +44,19 @@ export default defineConfig({
         }
       }
     }
+  },
+  server: {
+    proxy: {
+      '/api/deepseek': {
+        target: 'https://api.deepseek.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/deepseek/, ''),
+        secure: false,
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      }
+    }
   }
 }) 
