@@ -25,20 +25,23 @@ interface ChatCompletionResponse {
   }[];
 }
 
-// 修改 API 服务代码，适应Netlify环境
-const API_URL = import.meta.env.PROD 
-  ? '/.netlify/functions/deepseek-proxy'  // 使用Netlify函数
-  : '/api/deepseek/v1/chat/completions';  // 开发环境
+// 修改环境变量的获取方式
+const API_KEY = import.meta.env.DEEPSEEK_API_KEY || ''; // 移除VITE_前缀
 
-// 获取API密钥
-const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
+// 修改API URL构建
+const API_URL = import.meta.env.PROD 
+  ? '/.netlify/functions/deepseek-proxy'
+  : 'http://localhost:8888/.netlify/functions/deepseek-proxy'; // 本地开发时使用
 
 // 确认模型名称
 const MODEL_NAME = 'deepseek-chat'; // 或尝试 'deepseek-1.5-chat'，根据 DeepSeek 最新文档
 
-// 在API调用开始添加日志
-console.log("环境:", import.meta.env.PROD ? "生产环境" : "开发环境");
-console.log("API密钥状态:", API_KEY ? "已设置" : "未设置");
+// 添加更多日志
+console.log("当前环境:", {
+  NODE_ENV: import.meta.env.MODE,
+  isProd: import.meta.env.PROD,
+  apiUrl: API_URL
+});
 
 /**
  * 与DeepSeek API进行通信获取AI回复
