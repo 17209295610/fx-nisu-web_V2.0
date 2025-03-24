@@ -50,6 +50,28 @@ console.log("当前环境:", {
     }), {})
 });
 
+// 添加重试逻辑
+const fetchWithRetry = async (url: string, options: any, retries = 2) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await axios(url, options);
+      return response;
+    } catch (error: any) {
+      if (i === retries - 1) throw error;
+      
+      // 如果是超时或502错误才重试
+      if (error.response?.status !== 502 && !error.message.includes('timeout')) {
+        throw error;
+      }
+      
+      const waitTime = Math.min(1000 * Math.pow(2, i), 3000);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      
+      console.log(`Retry attempt ${i + 1} of ${retries}`);
+    }
+  }
+};
+
 /**
  * 与DeepSeek API进行通信获取AI回复
  */
@@ -99,47 +121,31 @@ export const getChatCompletion = async (messages: ChatMessage[]): Promise<string
     // 打印请求信息，不包含敏感信息
     console.log("发送请求到DeepSeek API");
     
-    // 创建一个带超时的Promise
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('API请求超时，服务器未响应')), 30000); // 30秒超时
-    });
-    
-    // 使用Promise.race来处理超时
-    const responsePromise = axios.post<ChatCompletionResponse>(
+    // 使用带重试的请求
+    const response = await fetchWithRetry(
       API_URL,
-      requestData,
       {
+        method: 'POST',
+        data: requestData,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${API_KEY}`
         },
-        timeout: 30000 // 增加axios超时设置为30秒
+        timeout: 25000 // 25秒超时
       }
     );
     
-    // 竞争两个Promise
-    const response = await Promise.race([responsePromise, timeoutPromise]);
-    
-    console.log("收到DeepSeek API响应:", response.status);
-    
-    // 返回AI回复
     return response.data.choices[0].message.content;
     
   } catch (error: any) {
     console.error('Error calling DeepSeek API:', error);
     
-    // 更详细的错误信息处理
-    if (error.message && error.message.includes('timeout')) {
-      throw new Error('API请求超时，服务器未响应');
-    } else if (error.response) {
-      // 服务器响应错误
-      console.error(`服务器响应错误: ${error.response.status}`, error.response.data);
-      throw new Error(`服务器响应错误(${error.response.status})`);
-    } else if (error.request) {
-      // 请求发送但没有响应
-      throw new Error('未收到API响应，请检查网络连接');
+    if (error.response?.status === 502) {
+      throw new Error('与AI服务通信暂时中断，请稍后重试');
+    } else if (error.message.includes('timeout')) {
+      throw new Error('请求超时，请稍后重试');
     } else {
-      throw new Error('无法连接到AI服务，请稍后再试');
+      throw new Error(error.response?.data?.error || '调用AI服务失败，请稍后再试');
     }
   }
 };

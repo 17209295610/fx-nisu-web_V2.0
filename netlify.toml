@@ -9,6 +9,10 @@ NODE_VERSION = "18"
 directory = "netlify/functions"
 node_bundler = "esbuild"
 
+# 增加函数超时时间
+[functions."deepseek-proxy"]
+  timeout = "30" # 设置为30秒
+
 # 确保环境变量可用于函数
 [context.production.environment]
   VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
