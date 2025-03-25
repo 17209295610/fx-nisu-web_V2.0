@@ -26,4 +26,14 @@ NODE_VERSION = "18"
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
-  force = true 
+  force = true
+
+[functions.deepseek-proxy]
+  timeout = 30
+
+[[headers]]
+  for = "/.netlify/functions/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS" 

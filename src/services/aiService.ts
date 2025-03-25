@@ -44,26 +44,32 @@ console.log("当前环境:", {
   hasApiKey: !!import.meta.env.VITE_DEEPSEEK_API_KEY,
 });
 
-// 添加重试逻辑
+// 修改 fetchWithRetry 函数
 const fetchWithRetry = async (url: string, options: any, retries = 2) => {
+  let lastError;
   for (let i = 0; i < retries; i++) {
     try {
-      const response = await axios(url, options);
+      const response = await axios({
+        ...options,
+        url,
+        validateStatus: (status) => status < 500
+      });
       return response;
     } catch (error: any) {
-      if (i === retries - 1) throw error;
+      lastError = error;
+      console.error(`Attempt ${i + 1} failed:`, {
+        status: error.response?.status,
+        message: error.message
+      });
       
-      // 如果是超时或502错误才重试
-      if (error.response?.status !== 502 && !error.message.includes('timeout')) {
-        throw error;
-      }
+      if (i === retries - 1) break;
       
       const waitTime = Math.min(1000 * Math.pow(2, i), 3000);
       await new Promise(resolve => setTimeout(resolve, waitTime));
-      
-      console.log(`Retry attempt ${i + 1} of ${retries}`);
+      console.log(`Retry attempt ${i + 2} of ${retries}`);
     }
   }
+  throw lastError;
 };
 
 /**
