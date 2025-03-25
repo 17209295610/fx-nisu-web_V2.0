@@ -18,11 +18,10 @@ const axiosWithRetry = async (url, options, retries = 3) => {
 };
 
 exports.handler = async function(event, context) {
-  // 添加更详细的环境日志
   console.log('Function called with event:', {
     httpMethod: event.httpMethod,
     path: event.path,
-    headers: event.headers,
+    headers: Object.keys(event.headers),
     bodyLength: event.body ? event.body.length : 0
   });
 
@@ -33,28 +32,30 @@ exports.handler = async function(event, context) {
   });
   
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { 
+      statusCode: 405, 
+      body: JSON.stringify({ error: 'Method Not Allowed' })
+    };
   }
 
   try {
-    // 解析请求体
     const body = JSON.parse(event.body);
-    
-    // 检查API密钥 - 使用VITE_前缀
     const apiKey = process.env.VITE_DEEPSEEK_API_KEY;
+    
     if (!apiKey) {
       console.error('API key is not set in environment');
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'API key not configured' })
+        body: JSON.stringify({ 
+          error: 'Configuration Error',
+          details: 'API key not found in environment'
+        })
       };
     }
 
-    // 添加请求日志
-    console.log('Preparing to send request to DeepSeek API');
+    console.log('Sending request to DeepSeek API');
     
-    // 使用简化的请求配置
-    const apiResponse = await axios({
+    const response = await axios({
       method: 'POST',
       url: 'https://api.deepseek.com/v1/chat/completions',
       data: body,
@@ -65,28 +66,31 @@ exports.handler = async function(event, context) {
       timeout: 25000
     });
     
-    // 添加响应日志
     console.log('Received response from DeepSeek API:', {
-      status: apiResponse.status,
-      dataLength: JSON.stringify(apiResponse.data).length
+      status: response.status,
+      dataLength: JSON.stringify(response.data).length
     });
     
     return {
       statusCode: 200,
-      body: JSON.stringify(apiResponse.data)
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(response.data)
     };
   } catch (error) {
     console.error('API Error:', {
       message: error.message,
       status: error.response?.status || 'no status',
-      stack: error.stack
+      data: error.response?.data || 'no data'
     });
     
     return {
-      statusCode: 500,
+      statusCode: error.response?.status || 500,
       body: JSON.stringify({ 
         error: '调用AI服务失败',
-        details: error.message
+        details: error.message,
+        status: error.response?.status
       })
     };
   }
