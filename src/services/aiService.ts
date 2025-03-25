@@ -178,16 +178,4 @@ export const loadChatHistory = (): ChatMessage[] => {
 
 export const clearChatHistory = () => {
   localStorage.removeItem('chat_history');
-};
-
-// 添加测试函数
-export const testNetlifyFunction = async () => {
-  try {
-    const response = await axios.get('/.netlify/functions/test-api');
-    console.log('Test response:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Test failed:', error);
-    throw error;
-  }
 }; 
