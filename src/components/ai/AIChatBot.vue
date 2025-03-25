@@ -250,6 +250,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 添加测试按钮 -->
+    <button
+      @click="testNetlifyFunction"
+      class="mr-2 text-xs text-white/70 hover:text-white"
+    >
+      测试函数
+    </button>
   </div>
 </template>
 
@@ -274,6 +282,7 @@ import {
   loadChatHistory,
   clearChatHistory,
 } from "@/services/aiService";
+import axios from "axios";
 
 // 聊天状态
 const isChatOpen = ref(false);
@@ -485,6 +494,18 @@ const copyToClipboard = (text) => {
       console.error("复制失败:", err);
       ElMessage.error("复制失败，请手动选择文本复制");
     });
+};
+
+// 添加测试函数
+const testNetlifyFunction = async () => {
+  try {
+    const response = await axios.get("/.netlify/functions/direct-test");
+    console.log("测试函数响应:", response.data);
+    ElMessage.success("测试函数正常运行");
+  } catch (error) {
+    console.error("测试函数错误:", error);
+    ElMessage.error("测试函数调用失败");
+  }
 };
 </script>
 

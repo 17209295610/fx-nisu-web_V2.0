@@ -31,10 +31,10 @@ const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
 // 修改API URL构建
 const API_URL = import.meta.env.PROD 
   ? '/.netlify/functions/deepseek-proxy'
-  : 'http://localhost:8888/.netlify/functions/deepseek-proxy'; // 本地开发时使用
+  : '/api/deepseek/v1/chat/completions'; // 本地开发使用Vite代理
 
 // 确认模型名称
-const MODEL_NAME = 'deepseek-chat'; // 或尝试 'deepseek-1.5-chat'，根据 DeepSeek 最新文档
+const MODEL_NAME = 'deepseek-chat';
 
 // 添加更详细的环境日志
 console.log("当前环境:", {
@@ -42,12 +42,6 @@ console.log("当前环境:", {
   isProd: import.meta.env.PROD,
   apiUrl: API_URL,
   hasApiKey: !!import.meta.env.VITE_DEEPSEEK_API_KEY,
-  envVars: Object.keys(import.meta.env)
-    .filter(key => key.startsWith('VITE_'))
-    .reduce((acc, key) => ({
-      ...acc,
-      [key]: key.includes('KEY') ? '[HIDDEN]' : import.meta.env[key]
-    }), {})
 });
 
 // 添加重试逻辑
@@ -121,31 +115,47 @@ export const getChatCompletion = async (messages: ChatMessage[]): Promise<string
     // 打印请求信息，不包含敏感信息
     console.log("发送请求到DeepSeek API");
     
+    // 根据环境使用不同的请求配置
+    const requestConfig = {
+      method: 'POST',
+      data: requestData,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      timeout: 25000
+    };
+
     // 使用带重试的请求
-    const response = await fetchWithRetry(
-      API_URL,
-      {
-        method: 'POST',
-        data: requestData,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
-        timeout: 25000 // 25秒超时
-      }
-    );
+    const response = await fetchWithRetry(API_URL, requestConfig);
     
     return response.data.choices[0].message.content;
     
   } catch (error: any) {
+    // 记录完整的错误信息
     console.error('Error calling DeepSeek API:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      response: error.response,
+      request: error.request ? 'present' : 'absent'
+    });
     
-    if (error.response?.status === 502) {
-      throw new Error('与AI服务通信暂时中断，请稍后重试');
-    } else if (error.message.includes('timeout')) {
-      throw new Error('请求超时，请稍后重试');
+    // 更全面的错误处理
+    if (error.code === 'ECONNABORTED') {
+      throw new Error('请求超时，请检查网络连接');
+    } else if (error.code === 'ERR_NETWORK') {
+      throw new Error('网络连接失败，请检查网络状态');
+    } else if (error.code === 'ERR_BAD_RESPONSE' || error.response?.status === 502) {
+      throw new Error('与AI服务通信暂时中断，请稍后重试 (502)');
+    } else if (error.response?.status === 500) {
+      throw new Error('AI服务器内部错误，请稍后再试 (500)');
+    } else if (error.response?.status === 401 || error.response?.status === 403) {
+      throw new Error('API授权失败，请联系管理员 (401/403)');
     } else {
-      throw new Error(error.response?.data?.error || '调用AI服务失败，请稍后再试');
+      // 如果有服务器返回的错误信息，优先使用
+      const serverErrorMsg = error.response?.data?.error || error.response?.data?.message;
+      throw new Error(serverErrorMsg || '调用AI服务失败，请稍后再试');
     }
   }
 };

@@ -6,18 +6,27 @@
 NODE_VERSION = "18"
 
 [functions]
-directory = "netlify/functions"
-node_bundler = "esbuild"
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/**"]
 
-# 增加函数超时时间
-[functions."deepseek-proxy"]
-  timeout = "30" # 设置为30秒
+# 设置函数单独的超时时间
+[[functions]]
+  function = "deepseek-proxy"
+  node_bundler = "esbuild"
+  timeout = 30
 
-# 确保环境变量可用于函数
+# 确保环境变量在不同环境下都可用
 [context.production.environment]
   VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
 
-# 设置API代理
+[context.deploy-preview.environment]
+  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
+
+[context.branch-deploy.environment]
+  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
+
+# 重定向配置
 [[redirects]]
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
