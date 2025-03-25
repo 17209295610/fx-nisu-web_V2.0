@@ -23,10 +23,61 @@ const axiosWithRetry = async (url, options, retries = 3) => {
   }
 };
 
-exports.handler = async function(event, context) {
+// 添加测试函数
+const testDeepSeekAPI = async (apiKey) => {
   try {
-    // 详细的请求日志
-    console.log('Function invoked with:', {
+    const response = await axios({
+      method: 'POST',
+      url: 'https://api.deepseek.com/v1/chat/completions',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'User-Agent': 'Netlify Function'
+      },
+      data: {
+        model: "deepseek-chat",
+        messages: [{ role: "user", content: "Hello" }],
+        temperature: 0.7,
+        max_tokens: 100
+      },
+      timeout: 10000
+    });
+    return { success: true, status: response.status };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error.message,
+      status: error.response?.status,
+      data: error.response?.data 
+    };
+  }
+};
+
+exports.handler = async function(event, context) {
+  // 添加CORS预检请求处理
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Max-Age': '86400'
+      }
+    };
+  }
+
+  // 添加健康检查端点
+  if (event.path.endsWith('/health')) {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'ok' })
+    };
+  }
+
+  try {
+    console.log('Function invoked:', {
       method: event.httpMethod,
       path: event.path,
       headers: Object.keys(event.headers),
@@ -34,17 +85,7 @@ exports.handler = async function(event, context) {
       remainingTime: context.getRemainingTimeInMillis?.() || 'unknown'
     });
 
-    if (event.httpMethod !== 'POST') {
-      return { 
-        statusCode: 405,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Method Not Allowed' })
-      };
-    }
-
-    const body = JSON.parse(event.body);
     const apiKey = process.env.VITE_DEEPSEEK_API_KEY;
-    
     if (!apiKey) {
       console.error('Missing API key');
       return {
@@ -57,24 +98,38 @@ exports.handler = async function(event, context) {
       };
     }
 
-    console.log('Preparing DeepSeek API request');
+    // 测试API连接
+    const testResult = await testDeepSeekAPI(apiKey);
+    console.log('API test result:', testResult);
+
+    if (!testResult.success) {
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'API Connection Test Failed',
+          details: testResult
+        })
+      };
+    }
+
+    const body = JSON.parse(event.body);
+    console.log('Preparing request to DeepSeek API');
     
-    const response = await axiosWithRetry(
-      'https://api.deepseek.com/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'User-Agent': 'Netlify Function'
-        },
-        data: body,
-        timeout: 20000,
-        validateStatus: status => status < 500
-      }
-    );
+    const response = await axios({
+      method: 'POST',
+      url: 'https://api.deepseek.com/v1/chat/completions',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'User-Agent': 'Netlify Function'
+      },
+      data: body,
+      timeout: 15000,
+      validateStatus: status => status < 500
+    });
     
-    console.log('DeepSeek API response received:', {
+    console.log('Response received:', {
       status: response.status,
       contentLength: response.data ? JSON.stringify(response.data).length : 0
     });
@@ -83,7 +138,8 @@ exports.handler = async function(event, context) {
       statusCode: response.status,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
       },
       body: JSON.stringify(response.data)
     };
@@ -92,25 +148,34 @@ exports.handler = async function(event, context) {
       name: error.name,
       message: error.message,
       status: error.response?.status,
-      data: error.response?.data,
-      stack: error.stack
+      data: error.response?.data
     });
 
-    // 根据错误类型返回不同的状态码
-    const statusCode = error.response?.status || 500;
-    const errorMessage = error.response?.data?.error || error.message;
+    // 更详细的错误处理
+    let errorResponse = {
+      error: '调用AI服务失败',
+      code: error.code || 'UNKNOWN_ERROR',
+      details: error.message
+    };
+
+    if (error.response?.data) {
+      errorResponse.apiError = error.response.data;
+    }
+
+    if (error.code === 'ECONNABORTED') {
+      errorResponse.error = '请求超时';
+    } else if (error.code === 'ECONNREFUSED') {
+      errorResponse.error = '无法连接到AI服务';
+    }
 
     return {
-      statusCode,
+      statusCode: error.response?.status || 500,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
       },
-      body: JSON.stringify({
-        error: '调用AI服务失败',
-        details: errorMessage,
-        code: error.code || 'UNKNOWN_ERROR'
-      })
+      body: JSON.stringify(errorResponse)
     };
   }
 }; 
