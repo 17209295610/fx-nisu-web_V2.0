@@ -9,12 +9,7 @@ NODE_VERSION = "18"
   directory = "netlify/functions"
   node_bundler = "esbuild"
   included_files = ["netlify/functions/**"]
-
-# 设置函数单独的超时时间
-[[functions]]
-  function = "deepseek-proxy"
-  node_bundler = "esbuild"
-  timeout = 30
+  external_node_modules = ["axios"]
 
 # 确保环境变量在不同环境下都可用
 [context.production.environment]
