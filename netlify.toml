@@ -9,7 +9,7 @@ NODE_VERSION = "18"
   directory = "netlify/functions"
   node_bundler = "esbuild"
   included_files = ["netlify/functions/**"]
-  external_node_modules = ["axios"]
+  external_node_modules = ["axios", "https"]
 
 # 确保环境变量在不同环境下都可用
 [context.production.environment]
@@ -29,7 +29,12 @@ NODE_VERSION = "18"
   force = true
 
 [functions.deepseek-proxy]
+  memory = 1024
   timeout = 30
+
+[functions.test-api]
+  memory = 256
+  timeout = 10
 
 [[headers]]
   for = "/.netlify/functions/*"
