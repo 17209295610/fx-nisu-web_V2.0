@@ -37,4 +37,9 @@ NODE_VERSION = "18"
     [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
-    Access-Control-Allow-Methods = "GET, POST, OPTIONS" 
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    [[headers]]
+      for = "/*"
+      [headers.values]
+        Access-Control-Allow-Origin = "*"
+        Content-Security-Policy = "script-src 'self' hm.baidu.com"
