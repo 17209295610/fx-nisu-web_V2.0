@@ -245,7 +245,7 @@
 
         <div class="mt-2 text-center">
           <span class="text-xs text-gray-400"
-            >使用 DeepSeek 提供模型驱动 | 锦囊问答</span
+            >使用 DeepSeek 开放API 提供模型驱动 | 锦囊问答</span
           >
         </div>
       </div>

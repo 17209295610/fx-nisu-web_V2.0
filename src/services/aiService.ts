@@ -85,7 +85,7 @@ export const getChatCompletion = async (messages: ChatMessage[]): Promise<string
     // 修改系统提示，扩展AI助手的回答范围
     const systemMessage: ChatMessage = {
       role: 'system',
-      content: `你是一个智能AI助手，专长于凤翔泥塑非物质文化遗产知识，但也能回答各类问题。
+      content: `你是一个集成DeepSeek API的AI助手，核心模型是deepseek-v3，专长于凤翔泥塑非物质文化遗产知识，但也能回答各类问题。
       
       关于凤翔泥塑的问题：请提供深入、专业的解答，展示你对其历史、工艺、特色、代表作品等方面的专业知识。
       
