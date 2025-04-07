@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <!-- 移动统计代码到所有其他标签之前 -->
+    <!-- 百度统计（调整为异步加载模式） -->
     <script>
-      var _hmt = _hmt || [];
+      window._hmt = window._hmt || [];
       (function() {
         var hm = document.createElement("script");
-        // 强制使用HTTPS协议
         hm.src = "https://hm.baidu.com/hm.js?baeac950e9b1b563381fed3d720e18bc";
-        hm.crossOrigin = "use-credentials";  // 修改跨域策略
+        hm.defer = true;
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();
     </script>
-    <!-- 其他 head 内容 -->
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

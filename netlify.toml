@@ -42,4 +42,4 @@ NODE_VERSION = "18"
       for = "/*"
       [headers.values]
         Access-Control-Allow-Origin = "*"
-        Content-Security-Policy = "script-src 'self' hm.baidu.com"
+        Content-Security-Policy = "script-src 'self' hm.baidu.com 'unsafe-inline'"
