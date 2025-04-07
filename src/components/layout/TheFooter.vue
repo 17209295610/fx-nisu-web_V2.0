@@ -128,7 +128,7 @@
           <!-- 修改访问量显示为人气指数 -->
           <div class="flex items-center gap-2">
             <el-icon><Star /></el-icon>
-            <span>站点访客浏览量：{{ count }}</span>
+            <span>站点访客浏览量：{{ count + 1 }}</span>
           </div>
         </div>
       </div>
