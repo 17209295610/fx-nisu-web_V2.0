@@ -12,17 +12,6 @@ NODE_VERSION = "18"
   included_files = ["netlify/functions/**"]
   external_node_modules = ["axios"]
 
-# 确保环境变量在不同环境下都可用
-[context.production.environment]
-  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
-
-[context.deploy-preview.environment]
-  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
-
-[context.branch-deploy.environment]
-  VITE_DEEPSEEK_API_KEY = "${VITE_DEEPSEEK_API_KEY}"
-
-# 重定向配置
 [[redirects]]
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
@@ -38,8 +27,3 @@ NODE_VERSION = "18"
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-    [[headers]]
-      for = "/*"
-      [headers.values]
-        Access-Control-Allow-Origin = "*"
-        Content-Security-Policy = "script-src 'self' hm.baidu.com 'unsafe-inline'"

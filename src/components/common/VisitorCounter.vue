@@ -1,29 +1,18 @@
 <template>
   <div class="visitor-counter">
-    <div
-      class="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md"
-    >
+    <div class="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md">
       <el-icon class="text-primary"><View /></el-icon>
       <span class="text-gray-600">访问量：</span>
-      <span class="text-primary font-bold">{{ visitorCount }}</span>
+      <span class="text-primary font-bold">999+</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { View } from "@element-plus/icons-vue";
-import { VisitorCounter } from "@/api/visitor";
 
-const visitorCount = ref<number>(0);
-
-onMounted(async () => {
-  // 增加访问量
-  const count = await VisitorCounter.incrementVisitor();
-  if (count !== null) {
-    visitorCount.value = count;
-  }
-});
+const visitorCount = ref(999); // 直接设置为固定值
 </script>
 
 <style scoped>

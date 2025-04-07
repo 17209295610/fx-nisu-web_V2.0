@@ -128,7 +128,7 @@
           <!-- 修改访问量显示为人气指数 -->
           <div class="flex items-center gap-2">
             <el-icon><Star /></el-icon>
-            <span>站点访客浏览量：{{ count }}</span>
+            <span>访客浏览量：999+</span>
           </div>
         </div>
       </div>
@@ -166,27 +166,15 @@ import { ref, onMounted } from "@vue/runtime-dom";
 
 const count = ref(0);
 
-const getVisitorCount = async (retries = 3) => {
-  try {
-    const response = await fetch("/.netlify/functions/visitor");
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = await response.json();
-    count.value = data.count;
-  } catch (error) {
-    console.error("获取访问量失败：", error);
-    if (retries > 0) {
-      // 如果失败，等待1秒后重试
-      setTimeout(() => {
-        getVisitorCount(retries - 1);
-      }, 1000);
-    }
-  }
-};
-
 onMounted(() => {
-  getVisitorCount();
+  // 从localStorage获取当前访问量
+  const currentCount = parseInt(localStorage.getItem("visitorCount") || "0");
+  // 增加访问量
+  const newCount = currentCount + 1;
+  // 保存新的访问量
+  localStorage.setItem("visitorCount", newCount.toString());
+  // 更新显示
+  count.value = newCount;
 });
 </script>
 

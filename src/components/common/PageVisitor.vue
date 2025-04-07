@@ -1,62 +1,47 @@
 <template>
   <div class="visitor-count">
-    <div class="flex items-center justify-center space-x-1 text-sm text-gray-600">
+    <div
+      class="flex items-center justify-center space-x-1 text-sm text-gray-600"
+    >
       <el-icon><View /></el-icon>
-      <span v-if="isLoaded && pv > 0">访问量：{{ pv }}</span>
-      <span v-else class="text-gray-400">
-        访问量统计
-        <el-tooltip content="数据来自百度统计后台" placement="top">
-          <el-icon class="ml-1"><InfoFilled /></el-icon>
-        </el-tooltip>
-      </span>
+      <span>访客浏览量：999+</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { View } from "@element-plus/icons-vue"
-import { InfoFilled } from '@element-plus/icons-vue'
-
-const pv = ref(0)
-const isLoaded = ref(false)
-
-onMounted(() => {
-  const checkPV = () => {
-    try {
-      // 移除百度统计API直接调用
-      pv.value = 0  // 临时占位值
-      isLoaded.value = true  // 强制显示加载完成
-    } catch (e) {
-      console.error('统计获取失败', e)
-    }
-  }
-  checkPV()
-})
+// 移除所有统计逻辑
 </script>
 
 <style scoped>
 .visitor-count {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
+  bottom: 20px;  /* 调整到底部间距 */
+  right: 20px;   /* 调整到右侧间距 */
   padding: 8px 12px;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
-.visitor-count:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+.visitor-count .flex {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 6px 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  /* 新增定位微调 */
+  transform: translate(10px, 10px); 
 }
 
 @media (max-width: 768px) {
   .visitor-count {
-    bottom: 70px;
+    bottom: 20px;  /* 移动端保持相同间距 */
+    right: 10px;
+    transform: none; /* 移除移动端偏移 */
   }
 }
 </style>
