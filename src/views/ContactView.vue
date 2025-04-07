@@ -283,26 +283,44 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           <!-- 微信公众号 -->
           <div
-            class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow"
+            class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow group"
           >
             <div class="flex items-center justify-center mb-4">
               <span class="text-4xl text-[#07C160]">📱</span>
             </div>
-            <h3 class="text-xl font-bold mb-2">微信公众号</h3>
-            <p class="text-gray-600">关注"非泥莫属"公众号</p>
-            <p class="text-primary font-medium mt-2">二维码待更新</p>
+            <h3 class="text-xl font-bold mb-4">微信公众号</h3>
+            <p class="text-gray-600 mb-4">关注"承星炘之火"公众号</p>
+            <!-- 微信二维码图片 -->
+            <div
+              class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+            >
+              <img
+                src="@/assets/images/平台运营/微信公众号.jpg"
+                alt="微信公众号二维码"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
 
           <!-- 小红书账号 -->
           <div
-            class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow"
+            class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow group"
           >
             <div class="flex items-center justify-center mb-4">
               <span class="text-4xl text-[#FE2C55]">📕</span>
             </div>
-            <h3 class="text-xl font-bold mb-2">小红书号</h3>
-            <p class="text-gray-600">关注"非泥莫属"小红书</p>
-            <p class="text-primary font-medium mt-2">二维码待更新</p>
+            <h3 class="text-xl font-bold mb-4">小红书号</h3>
+            <p class="text-gray-600 mb-4">关注"承星炘之火"小红书</p>
+            <!-- 小红书二维码图片 -->
+            <div
+              class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+            >
+              <img
+                src="@/assets/images/平台运营/小红书账号.jpg"
+                alt="小红书账号二维码"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
         </div>
       </div>

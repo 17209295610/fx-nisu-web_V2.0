@@ -34,6 +34,7 @@ import {
   VideoPlay,
   Platform,
   User,
+  Goods,
 } from "@element-plus/icons-vue";
 
 const route = useRoute();
@@ -41,8 +42,9 @@ const route = useRoute();
 const navItems = [
   { path: "/", label: "首页", icon: HomeFilled },
   { path: "/history", label: "历史文化", icon: Collection },
-  { path: "/crafting", label: "工艺", icon: Brush },
+  { path: "/crafting", label: "制作工艺", icon: Brush },
   { path: "/classic-products", label: "经典产品", icon: Present },
+  { path: "/cultural-products", label: "文创产品", icon: Goods },
   { path: "/education", label: "科普动画", icon: VideoPlay },
   { path: "/interactive-games", label: "互动游戏", icon: Platform },
   { path: "/contact", label: "关于我们", icon: User },

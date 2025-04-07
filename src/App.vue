@@ -44,6 +44,9 @@
       </a>
     </div>
 
+    <!-- 访问量计数器 -->
+    <!-- <SimpleVisitorCounter /> -->
+
     <!-- 添加AI聊天组件 -->
     <AIChatBot />
   </el-config-provider>

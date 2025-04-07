@@ -235,26 +235,22 @@
           <div class="w-24 h-1 bg-primary mx-auto mt-4"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 特色板块部分 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div
-            v-for="(feature, index) in culturalFeatures"
-            :key="index"
-            class="feature-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group"
+            v-for="feature in features"
+            :key="feature.title"
+            class="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-xl transition-all duration-500"
           >
+            <!-- 图片部分 -->
             <div class="relative h-48 overflow-hidden">
               <img
                 :src="feature.image"
                 :alt="feature.title"
-                class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                class="w-full h-full object-cover transform group-hover:scale-110 transition-all duration-500"
               />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
-              ></div>
-              <div class="absolute bottom-4 left-4 text-white">
-                <div class="text-sm font-medium">{{ feature.category }}</div>
-              </div>
             </div>
-
+            <!-- 内容部分 -->
             <div class="p-6">
               <h3
                 class="text-xl font-bold mb-3 text-gray-800 group-hover:text-primary transition-colors"
@@ -268,19 +264,24 @@
                 <el-tag size="small" :type="feature.tagType" effect="light">
                   {{ feature.tag }}
                 </el-tag>
-                <el-button type="primary" text class="flex items-center">
+                <router-link
+                  :to="feature.path"
+                  class="inline-flex items-center text-primary hover:text-primary-dark transition-colors"
+                >
+                  <span>了解更多</span>
                   <el-icon
                     class="ml-1 group-hover:translate-x-1 transition-transform"
                   >
                     <ArrowRight />
                   </el-icon>
-                </el-button>
+                </router-link>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <PageVisitor />
   </div>
 </template>
 
@@ -305,6 +306,7 @@ import slide1 from "@/assets/images/slides/slide1.jpg";
 import slide2 from "@/assets/images/slides/slide2.jpg";
 import slide3 from "@/assets/images/slides/slide3.jpg";
 import slide4 from "@/assets/images/slides/slide4.jpg";
+import PageVisitor from "@/components/common/PageVisitor.vue";
 
 // 计算轮播图高度
 const carouselHeight = ref("600px");
@@ -377,33 +379,33 @@ const characters = ref([
   },
 ]);
 
-// 将 newsItems 改为 culturalFeatures
-const culturalFeatures = ref([
+// 特色板块数据
+const features = [
   {
-    title: "千年工艺传承",
-    description: "凤翔泥塑技艺历经千年传承，形成了独特的艺术风格和制作工艺。",
-    category: "传统技艺",
-    image: tradition,
-    tag: "非遗传承",
+    title: "数字化展示",
+    description: "运用现代技术手段，全方位展示凤翔泥塑的艺术魅力和文化内涵。",
+    tag: "科技赋能",
     tagType: "success",
+    path: "/classic-products", // 跳转到经典产品展示页面
+    image: tradition,
   },
   {
-    title: "创新工艺展示",
-    description: "融合现代设计理念，让传统艺术焕发新生。",
-    category: "创新发展",
-    image: innovation,
-    tag: "匠心独运",
-    tagType: "primary",
-  },
-  {
-    title: "文化体验基地",
-    description: "设立泥塑文化体验中心，让游客零距离感受非遗魅力。",
-    category: "文化传播",
-    image: experience,
-    tag: "互动体验",
+    title: "文化传承",
+    description: "深入挖掘非遗文化价值，让传统工艺在新时代焕发生机。",
+    tag: "传统工艺",
     tagType: "warning",
+    path: "/history", // 跳转到历史文化页面
+    image: innovation,
   },
-]);
+  {
+    title: "创新互动",
+    description: "通过趣味游戏和科普动画，让文化传承更加生动有趣。",
+    tag: "趣味体验",
+    tagType: "info",
+    path: "/interactive-games", // 跳转到互动游戏页面
+    image: experience,
+  },
+];
 
 const imageLoaded = ref<boolean[]>([]);
 const handleImageLoad = (index: number) => {

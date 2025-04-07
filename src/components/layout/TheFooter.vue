@@ -120,11 +120,17 @@
 
       <!-- 底部版权信息 -->
       <div class="border-t border-gray-800 mt-2 pt-2 text-center text-sm">
-        <p>
-          ©
-          {{ new Date().getFullYear() }}
-          咸阳职业技术学院-信息工程学院【非泥莫属】团队. All rights reserved.
-        </p>
+        <div class="flex items-center justify-center gap-4">
+          <p>
+            © {{ new Date().getFullYear() }}
+            咸阳职业技术学院-信息工程学院【非泥莫属】团队. All rights reserved.
+          </p>
+          <!-- 修改访问量显示为人气指数 -->
+          <div class="flex items-center gap-2">
+            <el-icon><Star /></el-icon>
+            <span>站点访客浏览量：{{ count }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -153,7 +159,23 @@ import {
   Message,
   Platform,
   Share,
+  View,
+  Star,
 } from "@element-plus/icons-vue";
+import { ref, onMounted } from "@vue/runtime-dom";
+
+const count = ref(0);
+
+onMounted(() => {
+  // 从localStorage获取当前访问量
+  const currentCount = parseInt(localStorage.getItem("visitorCount") || "0");
+  // 增加访问量
+  const newCount = currentCount + 1;
+  // 保存新的访问量
+  localStorage.setItem("visitorCount", newCount.toString());
+  // 更新显示
+  count.value = newCount;
+});
 </script>
 
 <style scoped>
