@@ -1,62 +1,62 @@
 <template>
   <div class="visitor-count">
-    <div
-      class="flex items-center justify-center space-x-1 text-sm text-gray-600"
-    >
+    <div class="flex items-center justify-center space-x-1 text-sm text-gray-600">
       <el-icon><View /></el-icon>
-      <span>访问量：{{ visitorCount }}</span>
+      <span v-if="pv > 0">访问量：{{ pv }}</span>
+      <span v-else class="text-gray-400">统计加载中...</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { View } from "@element-plus/icons-vue";
+import { ref, onMounted, onUnmounted } from 'vue'
+import { View } from "@element-plus/icons-vue"
 
-const visitorCount = ref(0);
-
-const getVisitorCount = async () => {
-  try {
-    // 注意这里的路径，确保与 netlify.toml 中的配置匹配
-    const response = await fetch("/.netlify/functions/visitor");
-    console.log("API Response:", response); // 添加日志
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("Visitor Data:", data); // 添加日志
-
-    visitorCount.value = data.count;
-  } catch (error) {
-    console.error("获取访问量失败：", error);
-  }
-};
+const pv = ref(0)
+let checkInterval: number | null = null
 
 onMounted(() => {
-  console.log("Component mounted"); // 添加日志
-  getVisitorCount();
-});
+  checkInterval = window.setInterval(() => {
+    try {
+      if (window._hmt && typeof window._hmt._getPV === 'function') {
+        const newPV = window._hmt._getPV()
+        if (newPV > pv.value) {
+          pv.value = newPV
+        }
+      }
+    } catch (e) {
+      console.error('统计获取失败', e)
+    }
+  }, 2000) // 每2秒检查一次
+})
+
+onUnmounted(() => {
+  checkInterval && clearInterval(checkInterval)
+})
 </script>
 
 <style scoped>
-.fixed > div {
-  transform: translateY(0);
+.visitor-count {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
 }
 
-.fixed > div:hover {
+.visitor-count:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-.text-sm {
-  transition: all 0.3s ease;
-}
-
-.text-sm:hover {
-  color: var(--el-color-primary);
+@media (max-width: 768px) {
+  .visitor-count {
+    bottom: 70px;
+  }
 }
 </style>
