@@ -57,6 +57,7 @@ export default defineConfig({
           'Accept': 'application/json'
         }
       }
-    }
+    },
+    historyApiFallback: true // 添加 history 模式支持
   }
-}) 
+})

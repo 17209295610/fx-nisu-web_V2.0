@@ -2,36 +2,29 @@
   <div class="visitor-count">
     <div class="flex items-center justify-center space-x-1 text-sm text-gray-600">
       <el-icon><View /></el-icon>
-      <span v-if="pv > 0">访问量：{{ pv }}</span>
-      <span v-else class="text-gray-400">统计加载中...</span>
+      <span v-if="isLoaded">访问量：{{ pv }}</span>
+      <span v-else class="text-gray-400">统计初始化中...</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { View } from "@element-plus/icons-vue"
 
 const pv = ref(0)
-let checkInterval: number | null = null
+const isLoaded = ref(false)
 
 onMounted(() => {
-  checkInterval = window.setInterval(() => {
-    try {
-      if (window._hmt && typeof window._hmt._getPV === 'function') {
-        const newPV = window._hmt._getPV()
-        if (newPV > pv.value) {
-          pv.value = newPV
-        }
-      }
-    } catch (e) {
-      console.error('统计获取失败', e)
+  const checkPV = () => {
+    if (window._hmt?._getPV) {
+      pv.value = window._hmt._getPV()
+      isLoaded.value = true
+    } else {
+      setTimeout(checkPV, 1000)
     }
-  }, 2000) // 每2秒检查一次
-})
-
-onUnmounted(() => {
-  checkInterval && clearInterval(checkInterval)
+  }
+  checkPV()
 })
 </script>
 

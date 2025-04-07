@@ -130,4 +130,11 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-export default router 
+router.afterEach((to) => {
+  // 添加百度统计路由跟踪
+  if (window._hmt && to.path) {
+    window._hmt.push(['_trackPageview', to.fullPath])
+  }
+})
+
+export default router

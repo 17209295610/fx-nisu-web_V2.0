@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>凤翔泥塑</title>
-    
-    <!-- 百度统计 -->
+    <!-- 移动统计代码到所有其他标签之前 -->
     <script>
       var _hmt = _hmt || [];
       (function() {
         var hm = document.createElement("script");
         hm.src = "https://hm.baidu.com/hm.js?baeac950e9b1b563381fed3d720e18bc";
-        var s = document.getElementsByTagName("script")[0]; 
+        hm.crossOrigin = "anonymous";
+        var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();
     </script>
+    <!-- 其他 head 内容 -->
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>凤翔泥塑</title>
   </head>
   <body>
     <div id="app"></div>
