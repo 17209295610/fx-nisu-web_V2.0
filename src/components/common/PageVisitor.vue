@@ -1,31 +1,42 @@
 <template>
-  <div class="fixed bottom-0 right-0 z-50">
+  <div class="visitor-count">
     <div
-      class="flex items-center gap-1 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-tl-full text-white/80 text-xs hover:bg-black/30 transition-all duration-300"
+      class="flex items-center justify-center space-x-1 text-sm text-gray-600"
     >
-      <el-icon class="text-xs"><View /></el-icon>
-      <span>{{ formatNumber(count) }}</span>
+      <el-icon><View /></el-icon>
+      <span>访问量：{{ visitorCount }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "@vue/runtime-dom";
+import { ref, onMounted } from "vue";
 import { View } from "@element-plus/icons-vue";
 
-const count = ref(0);
+const visitorCount = ref(0);
 
-// 格式化数字显示（添加千位分隔符）
-const formatNumber = (num: number): string => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const getVisitorCount = async () => {
+  try {
+    // 注意这里的路径，确保与 netlify.toml 中的配置匹配
+    const response = await fetch("/.netlify/functions/visitor");
+    console.log("API Response:", response); // 添加日志
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Visitor Data:", data); // 添加日志
+
+    visitorCount.value = data.count;
+  } catch (error) {
+    console.error("获取访问量失败：", error);
+  }
 };
 
 onMounted(() => {
-  // 获取总访问量
-  const currentCount = parseInt(localStorage.getItem("visitorCount") || "0");
-  const newCount = currentCount + 1;
-  localStorage.setItem("visitorCount", newCount.toString());
-  count.value = newCount;
+  console.log("Component mounted"); // 添加日志
+  getVisitorCount();
 });
 </script>
 
