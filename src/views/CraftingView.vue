@@ -169,7 +169,7 @@
               <el-timeline-item
                 v-for="(step, index) in craftingSteps"
                 :key="index"
-                :type="index % 2 === 0 ? 'primary' : 'success'"
+                :type="index % 2 === 0 ? 'primary' : 'warning'"
                 size="large"
                 :hollow="true"
               >
@@ -279,7 +279,7 @@
                           <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                               <el-tag
-                                :type="index % 2 === 0 ? 'primary' : 'success'"
+                                :type="index % 2 === 0 ? 'primary' : 'warning'"
                                 effect="dark"
                                 class="text-base px-4 py-1"
                                 round
@@ -307,7 +307,7 @@
                         <template #header>
                           <div class="flex items-center gap-3">
                             <el-tag
-                              :type="index % 2 === 0 ? 'primary' : 'success'"
+                              :type="index % 2 === 0 ? 'primary' : 'warning'"
                               effect="dark"
                               class="text-base px-4 py-1"
                               round
@@ -326,12 +326,12 @@
                             <div
                               class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
                             >
-                              <el-icon class="text-primary"><Check /></el-icon>
+                              <el-icon class="text-primary"><Select /></el-icon>
                             </div>
                             <div class="flex-1">
                               <el-text
                                 class="text-gray-600 text-base"
-                                :type="index % 2 === 0 ? 'primary' : 'success'"
+                                :type="index % 2 === 0 ? 'primary' : 'warning'"
                               >
                                 {{ detail }}
                               </el-text>
@@ -398,7 +398,7 @@ import type { Component } from "@vue/runtime-core";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import Breadcrumb from "@/components/common/Breadcrumb.vue";
 
-const { Collection, Tools, Medal, Check, Timer, Star, Picture, Loading } =
+const { Collection, Tools, Medal, Select, Timer, Star, Picture, Loading } =
   ElementPlusIconsVue;
 
 // 添加banner背景图片

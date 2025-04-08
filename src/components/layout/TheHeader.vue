@@ -117,7 +117,7 @@
                 <!-- 日期部分 -->
                 <div class="flex flex-col items-center pr-2">
                   <div class="text-sm text-[var(--color-text-secondary)]">
-                    {{ dateInfo.day }}
+                    {{ dateInfo.year }} {{ dateInfo.day }}
                   </div>
                   <div class="text-lg font-bold text-[var(--color-primary)]">
                     {{ dateInfo.date }}

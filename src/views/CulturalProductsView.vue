@@ -103,10 +103,7 @@
           class="inline-block bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 px-8 py-4 rounded-2xl shadow-md"
         >
           <p class="text-gray-700 text-lg">
-            {{
-              categories.find((c: Category) => c.id === activeCategory)
-                ?.description
-            }}
+            {{ categories.find((c) => c.id === activeCategory)?.description }}
           </p>
         </div>
       </div>
@@ -203,16 +200,29 @@
             </div>
 
             <!-- 产品信息 -->
-            <div class="p-6">
+            <div
+              class="p-6 bg-gradient-to-b from-white via-white/95 to-white/90 relative overflow-hidden product-info"
+            >
+              <!-- 添加背景纹理 -->
+              <div
+                class="absolute inset-0 bg-pattern-light opacity-10 z-0"
+              ></div>
+              <!-- 添加顶部装饰线 -->
+              <div
+                class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+              ></div>
+
               <h3
-                class="text-xl font-bold mb-3 group-hover:text-primary transition-colors"
+                class="text-xl font-bold mb-3 group-hover:text-primary transition-colors relative z-10"
               >
                 {{ product.title }}
               </h3>
-              <p class="text-gray-600 text-sm leading-relaxed mb-4">
+              <p
+                class="text-gray-600 text-sm leading-relaxed mb-4 relative z-10"
+              >
                 {{ product.description }}
               </p>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-2 relative z-10">
                 <el-tag
                   v-for="tag in product.tags"
                   :key="tag"
@@ -656,5 +666,39 @@ const previewImage = (url: string) => {
 
 .animation-delay-600 {
   animation-delay: 0.6s;
+}
+
+/* 添加产品信息样式 */
+.product-info {
+  position: relative;
+  border-top: 1px solid rgba(229, 231, 235, 0.5);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+/* 添加不同类别的产品卡片信息区背景 */
+.product-card:has(.el-tag.el-tag--success) .product-info {
+  background-image: linear-gradient(to bottom, white, rgba(236, 253, 245, 0.4));
+}
+
+.product-card:has(.el-tag.el-tag--primary) .product-info {
+  background-image: linear-gradient(to bottom, white, rgba(236, 244, 253, 0.4));
+}
+
+.product-card:has(.el-tag.el-tag--warning) .product-info {
+  background-image: linear-gradient(to bottom, white, rgba(254, 249, 235, 0.4));
+}
+
+.product-card:has(.el-tag.el-tag--danger) .product-info {
+  background-image: linear-gradient(to bottom, white, rgba(253, 236, 236, 0.4));
+}
+
+/* 背景纹理 */
+.bg-pattern-light {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c75d38' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 20l20-20L0 0zM40 0l-20 20 20 20z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 产品卡片悬停效果强化 */
+.product-card:hover .product-info {
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 </style>

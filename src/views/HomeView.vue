@@ -268,7 +268,13 @@
                 <el-tag size="small" :type="feature.tagType" effect="light">
                   {{ feature.tag }}
                 </el-tag>
-                <el-button type="primary" text class="flex items-center">
+                <el-button
+                  type="primary"
+                  text
+                  class="flex items-center"
+                  @click="router.push(feature.path)"
+                >
+                  了解更多
                   <el-icon
                     class="ml-1 group-hover:translate-x-1 transition-transform"
                   >
@@ -293,6 +299,7 @@ import {
   ArrowRight,
 } from "@element-plus/icons-vue";
 import { ref, onMounted, onUnmounted } from "@vue/runtime-dom";
+import { useRouter } from "vue-router";
 // 直接导入图片和视频
 import img1 from "../assets/images/Anime_image/祥泥仔1.jpg";
 import img2 from "../assets/images/Anime_image/祥泥仔2.jpg";
@@ -307,6 +314,9 @@ import slide2 from "@/assets/images/slides/slide2.jpg";
 import slide3 from "@/assets/images/slides/slide3.jpg";
 import slide4 from "@/assets/images/slides/slide4.jpg";
 import PageVisitor from "@/components/common/PageVisitor.vue";
+
+// 初始化路由
+const router = useRouter();
 
 // 计算轮播图高度
 const carouselHeight = ref("600px");
@@ -388,6 +398,7 @@ const culturalFeatures = ref([
     image: tradition,
     tag: "非遗传承",
     tagType: "success",
+    path: "/history",
   },
   {
     title: "创新工艺展示",
@@ -396,14 +407,16 @@ const culturalFeatures = ref([
     image: innovation,
     tag: "匠心独运",
     tagType: "primary",
+    path: "/crafting",
   },
   {
-    title: "文化体验基地",
-    description: "设立泥塑文化体验中心，让游客零距离感受非遗魅力。",
+    title: "趣味互动体验",
+    description: "通过互动游戏和趣味活动，让非遗文化传承更加生动有趣。",
     category: "文化传播",
     image: experience,
     tag: "互动体验",
     tagType: "warning",
+    path: "/interactive-games",
   },
 ]);
 
