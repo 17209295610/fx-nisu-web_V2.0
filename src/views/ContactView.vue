@@ -322,6 +322,7 @@
               />
             </div>
           </div>
+          <div>
         </div>
       </div>
     </div>
@@ -383,16 +384,15 @@ const contacts = [
 const teamMembers = [
   { name: "程文卓", class: "信息安全技术应用2301班", role: "网站开发" },
   { name: "岳玉彤", class: "数字媒体艺术设计2407班", role: "UI设计" },
-  { name: "杜悦萌", class: "信息安全技术应用2301班", role: "PPT制作" },
+  { name: "杜悦萌", class: "信息安全技术应用2301班", role: "APP运营" },
   { name: "高嘉琪", class: "信息安全技术应用2302班", role: "项目负责人" },
   { name: "段婧雯", class: "信息安全技术应用2302班", role: "调研报告撰写" },
   { name: "呼思彤", class: "信息安全技术应用2301班", role: "游戏开发" },
-  { name: "芦梦", class: "数字媒体艺术设计2407班", role: "UI设计" },
-  { name: "冯佳乐", class: "信息安全技术应用2302班", role: "APP运营" },
+  { name: "王玉", class: "数字媒体艺术设计2102班", role: "UI设计" },
+  { name: "冯佳乐", class: "信息安全技术应用2302班", role: "PPT制作" },
   { name: "童毓馨", class: "电子信息工程技术2301班", role: "调研报告撰写" },
   { name: "刘旭东", class: "软件工程技术2301班", role: "资料支持" },
-  { name: "樊嘉瑞", class: "软件工程技术2302班", role: "调研报告撰写" },
-  { name: "王玉", class: "数字媒体艺术设计2102班", role: "UI设计" },
+  { name: "范德熙", class: "数字媒体艺术设计2402班", role: "视频剪辑" },
   { name: "朱航", class: "凤翔泥塑传承人", role: "文化顾问" },
 ];
 
