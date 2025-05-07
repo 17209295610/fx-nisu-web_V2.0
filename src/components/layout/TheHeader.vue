@@ -31,7 +31,7 @@
                 class="text-base text-[var(--color-text-secondary)] whitespace-nowrap"
                 style="font-family: var(--font-family-secondary)"
               >
-                非物质文化遗产传承基地
+                非你莫属非遗传承工作室
               </div>
             </div>
           </div>

@@ -49,7 +49,9 @@
               >
                 <el-icon class="text-6xl text-primary"><Avatar /></el-icon>
               </div>
-              <h3 class="text-2xl font-bold text-primary">非泥莫属团队</h3>
+              <h3 class="text-2xl font-bold text-primary">
+                非你莫属非遗传承工作室
+              </h3>
               <div
                 class="h-1 w-20 bg-gradient-to-r from-transparent via-primary/50 to-transparent mt-2"
               ></div>
@@ -69,7 +71,7 @@
                   <h4 class="text-lg font-semibold">团队背景</h4>
                 </div>
                 <p class="text-gray-600 leading-relaxed">
-                  "非泥莫属"团队来自咸阳职业技术学院信息工程学院，是一支充满创新精神和文化使命感的青年团队。我们致力于将传统文化与现代科技深度融合，通过数字化手段赋能非遗传承。
+                  "非你莫属非遗传承工作室"来自咸阳职业技术学院信息工程学院，是一支充满创新精神和文化使命感的青年团队。我们致力于将传统文化与现代科技深度融合，通过数字化手段赋能非遗传承。
                 </p>
               </div>
 
@@ -280,7 +282,7 @@
       <!-- 社交媒体账号 -->
       <div class="mt-16">
         <h2 class="text-3xl font-bold text-center mb-12">关注我们</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <!-- 微信公众号 -->
           <div
             class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow group"
@@ -292,7 +294,7 @@
             <p class="text-gray-600 mb-4">关注"承星炘之火"公众号</p>
             <!-- 微信二维码图片 -->
             <div
-              class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+              class="w-40 h-40 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
             >
               <img
                 src="@/assets/images/平台运营/微信公众号.jpg"
@@ -313,7 +315,7 @@
             <p class="text-gray-600 mb-4">关注"承星炘之火"小红书</p>
             <!-- 小红书二维码图片 -->
             <div
-              class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+              class="w-40 h-40 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
             >
               <img
                 src="@/assets/images/平台运营/小红书账号.jpg"
@@ -322,8 +324,28 @@
               />
             </div>
           </div>
-          <!-- 添加缺失的闭合标签 -->
+
+          <!-- 抖音账号 -->
+          <div
+            class="bg-white rounded-xl p-8 text-center hover:shadow-xl transition-shadow group"
+          >
+            <div class="flex items-center justify-center mb-4">
+              <span class="text-4xl text-[#000000]">📱</span>
+            </div>
+            <h3 class="text-xl font-bold mb-4">抖音号</h3>
+            <p class="text-gray-600 mb-4">关注"承星炘之火"抖音</p>
+            <!-- 抖音二维码图片 -->
+            <div
+              class="w-40 h-40 mx-auto overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+            >
+              <img
+                src="@/assets/images/平台运营/抖音账号.jpg"
+                alt="抖音账号二维码"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
+        </div>
       </div>
     </div>
   </div>

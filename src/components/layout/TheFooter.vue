@@ -10,7 +10,7 @@
         <div class="space-y-2">
           <img src="@/assets/images/logo.png" alt="Logo" class="h-10" />
           <p class="text-sm">
-            凤翔泥塑，陕西省非物质文化遗产，千年工艺传承，匠心独运的艺术瑰宝。该网站由咸阳职业技术学院信息工程学院"非泥莫属"团队打造。
+            凤翔泥塑，陕西省非物质文化遗产，千年工艺传承，匠心独运的艺术瑰宝。该网站由咸阳职业技术学院信息工程学院"非你莫属非遗传承工作室"打造。
           </p>
         </div>
 
@@ -106,7 +106,7 @@
           <h3 class="text-white font-bold mb-2">团队信息</h3>
           <div class="space-y-2">
             <p class="text-sm">
-              "非泥莫属"团队
+              "非你莫属非遗传承工作室"
               <br />
               咸阳职业技术学院信息工程学院
               <br />
@@ -121,7 +121,8 @@
         <div class="flex items-center justify-center gap-4">
           <p>
             © {{ new Date().getFullYear() }}
-            咸阳职业技术学院-信息工程学院【非泥莫属】团队. All rights reserved.
+            咸阳职业技术学院-信息工程学院【非你莫属非遗传承工作室】. All rights
+            reserved.
           </p>
           <!-- 修改访问量显示为人气指数 -->
           <div class="flex items-center gap-2">
@@ -157,7 +158,6 @@ import {
   Message,
   Platform,
   Share,
-  View,
   Star,
 } from "@element-plus/icons-vue";
 import { ref, onMounted } from "@vue/runtime-dom";
